@@ -15,6 +15,8 @@ public class ArrayTest {
             add(myArray, 10);
         }
 
+        insert(myArray, 1, 5);
+
         for (int i = 0; i < LENGTH; i++) {
             System.out.println("index " + i + ": " + myArray[i]);
         }
@@ -26,4 +28,12 @@ public class ArrayTest {
         count++;
     }
 
+    public static void insert(int[] array, int idx, int x) {
+        // TODO: 주어진 배열 공간이 다 찼을 경우에 대한 예외 처리
+        for (int i = count; i >= idx; i--) {
+            array[i+1] = array[i];
+        }
+        array[idx] = x;
+        count++;
+    }
 }

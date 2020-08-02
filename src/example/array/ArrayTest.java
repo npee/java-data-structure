@@ -2,11 +2,28 @@ package example.array;
 
 // 기본 동작, static 함수로 추가
 public class ArrayTest {
-    public static void main(String[] args) {
-        int[] myArray = new int[10];
+    public static final int LENGTH = 10;
+    public static int count = 0;
 
-        for (int i = 0; i < 10; i++) {
+    public static void main(String[] args) {
+        int[] myArray = new int[LENGTH];
+
+        add(myArray, 1);
+        add(myArray, 2);
+
+        for (int i = 0; i < 5; i++) {
+            add(myArray, 10);
+        }
+
+        for (int i = 0; i < LENGTH; i++) {
             System.out.println("index " + i + ": " + myArray[i]);
         }
     }
+
+    public static void add(int[] array, int x) {
+        // TODO: 주어진 배열 공간이 다 찼을 경우에 대한 예외 처리
+        array[count] = x;
+        count++;
+    }
+
 }

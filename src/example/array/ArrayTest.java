@@ -31,8 +31,10 @@ public class ArrayTest {
 
         add(source1, 1);
         add(source1, 2);
+        add(source1, 3);
         add(source2, 1);
         add(source2, 2);
+        add(source2, 3);
 
         // 배열의 주소값을 비교하게 되므로 다를 수 밖에 없다
         System.out.println(toCustomString(source1));
@@ -103,14 +105,11 @@ public class ArrayTest {
     }
 
     public static boolean equals(int[] array1, int[] array2) {
-        if (array1.length == array2.length) {
-            for (int i = 0; i < array1.length; i++) {
-                if (array1[i] != array2[i]) {
-                    return false;
-                }
+        for (int i = 0; i < array1.length; i++) {
+            if (array1[i] != array2[i]) {
+                return false;
             }
-            return true;
         }
-        return false;
+        return true;
     }
 }

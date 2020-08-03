@@ -17,6 +17,9 @@ public class ArrayTest {
 
         insert(myArray, 1, 5);
 
+        remove(myArray, 0);
+        remove(myArray, 4);
+
         for (int i = 0; i < LENGTH; i++) {
             System.out.println("index " + i + ": " + myArray[i]);
         }
@@ -35,5 +38,13 @@ public class ArrayTest {
         }
         array[idx] = x;
         count++;
+    }
+
+    public static void remove(int[] array, int idx) {
+        for (int i = idx; i < count - 1; i++) {
+            array[i] = array[i+1];
+        }
+        array[count - 1] = 0;
+        count--;
     }
 }

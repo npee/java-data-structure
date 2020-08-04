@@ -74,14 +74,16 @@ public class ArrayTest {
         add(source2, 3);
 
         // 배열의 주소값을 비교하게 되므로 다를 수 밖에 없다
-        System.out.println(toCustomString(source1));
-        System.out.println(toCustomString(source2));
+        System.out.println(source1);
+        System.out.println(source2);
 
         if (source1 == source2) {
             System.out.println("equal");
         } else {
             System.out.println("not equal");
         }
+
+        System.out.println(source1 == source2);
 
         // equals
         if (equals(source1, source2)) {
@@ -97,12 +99,39 @@ public class ArrayTest {
         } else {
             System.out.println("not equal");
         }
+
+        // copy
+        int[] source15 = {5, 10, 15, 20, 25};
+        int[][] source32 = {{10, 20}, {30, 40}, {50, 60}};
+        int[][] ref32 = source32; // 참조
+        int[] ref15;
+        int[][] ref32deep;
+
+        ref15 = deepcopy(source15);
+        ref32deep = deepcopy2d(source32);
+
+        System.out.println(toCustomString(source15));
+
+        for (int i = 0; i < 3; i++) {
+            System.out.println(toCustomString(source32[i]));
+        }
+
+        ref15[4] = 750;
+        ref32[2][1] = 100;
+        ref32deep[2][1] = 200;
+
+        System.out.println(toCustomString(source15));
+        System.out.println(toCustomString(ref15));
+        System.out.println(source32[2][1]);
+        System.out.println(ref32[2][1]);
+        System.out.println(ref32deep[2][1]);
+
     }
 
     public static String toCustomString(int[] array) {
         String arrayStr = "[";
-        for (int i = 0; array[i] != 0; i++) {
-            if (array[i + 1] == 0) {
+        for (int i = 0; i < array.length; i++) {
+            if (i == array.length - 1) {
                 arrayStr += array[i] + "]";
             } else {
                 arrayStr += array[i] + ", ";
@@ -156,5 +185,19 @@ public class ArrayTest {
             }
         }
         return true;
+    }
+
+    public static int[] deepcopy(int[] array) {
+        int[] dest = new int[array.length];
+        System.arraycopy(array, 0, dest, 0, array.length);
+        return dest;
+    }
+
+    public static int[][] deepcopy2d(int[][] array) {
+        int[][] dest = new int[array.length][array[0].length];
+        for (int i = 0; i < array.length; i++) {
+            System.arraycopy(array[i], 0, array[i], 0, array[0].length);
+        }
+        return dest;
     }
 }

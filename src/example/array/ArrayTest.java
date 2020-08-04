@@ -1,7 +1,22 @@
 package example.array;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 // 기본 동작, static 함수로 추가
 // 요소는 자연수로 제한
+class MutableObject {
+    public int x;
+
+    public MutableObject(int x) {
+        this.x = x;
+    }
+
+    public void setX(int x) {
+        this.x = x;
+    }
+}
 public class ArrayTest {
     public static final int LENGTH = 10;
 
@@ -103,12 +118,107 @@ public class ArrayTest {
         // copy
         int[] source15 = {5, 10, 15, 20, 25};
         int[][] source32 = {{10, 20}, {30, 40}, {50, 60}};
-        int[][] ref32 = source32; // 참조
+
         int[] ref15;
+        int[] source15clone = source15.clone();
+        int[] copyOfSrc15;
+        int[] copyOfRangeSrc15;
+
+        int[][] ref32 = source32; // 참조
         int[][] ref32deep;
+        int[][] reftest = new int[source32.length][source32[0].length];
+        int[][] source32clone = new int[source32.length][source32[0].length];
+        int[][] copyOfSrc32 = new int[source32.length][source32[0].length];
+        int[][] copyOfRangeSrc32 = new int[source32.length][source32[0].length];
+
+        String[] strArr = new String[5];
+        String[][] str2dArr = new String[][]{{"aaa", "bbb"}, {"ccc", "ddd"}};
+        strArr[0] = "abc";
+        strArr[1] = "def";
+        strArr[2] = "ghi";
+        strArr[3] = "jkl";
+        strArr[4] = "mno";
+        String[] strRef = strArr;
+        String[] strRef2;
+        strRef[4] = "pqr";
+        String[][] str2dRef;
+
+        List<MutableObject> mutableObjects = new ArrayList<>();
+        mutableObjects.add(new MutableObject(1));
+        mutableObjects.add(new MutableObject(2));
+        mutableObjects.add(new MutableObject(3));
+        mutableObjects.add(new MutableObject(4));
+
+        List<MutableObject> mutabRef = mutableObjects;
+        List<MutableObject> mutabNew = new ArrayList<>(mutableObjects); // 복사 생성자
+        List<MutableObject> mutabSet = new ArrayList<>(mutableObjects); // 가변 객체
+
+        for (MutableObject mutableObject : mutableObjects) {
+            System.out.println(mutableObject.x);
+        }
+
+        mutabRef.add(new MutableObject(5));
+        mutabNew.add(new MutableObject(6));
+        // shallow copy(mutable object)
+        mutabSet.get(0).setX(10);
+
+        for (MutableObject mutableObject : mutableObjects) {
+            System.out.println(mutableObject.x);
+        }
+
+        for (MutableObject mutableObject : mutabNew) {
+            System.out.println(mutableObject.x);
+        }
+
+        for (int i = 0; i < strArr.length; i++) {
+            System.out.println(strArr[i]);
+        }
+
+        strRef2 = strArr.clone();
+        strRef2[4] = "stu";
+
+        for (int i = 0; i < strArr.length; i++) {
+            System.out.println(strArr[i]);
+        }
+
+        for (int i = 0; i < strRef2.length; i++) {
+            System.out.println(strRef2[i]);
+        }
+
+
+        for (int i = 0; i < str2dArr.length; i++) {
+            for (int j = 0; j < str2dArr[0].length; j++) {
+                System.out.println(str2dArr[i][j]);
+            }
+        }
+
+        str2dRef = str2dArr.clone();
+        str2dRef[1][1] = "xxx";
+
+        for (int i = 0; i < str2dArr.length; i++) {
+            for (int j = 0; j < str2dArr[0].length; j++) {
+                System.out.println(str2dArr[i][j]);
+            }
+        }
 
         ref15 = deepcopy(source15);
         ref32deep = deepcopy2d(source32);
+
+        // shallow copy
+        System.arraycopy(source32, 0, reftest, 0, source32.length);
+
+        copyOfSrc15 = Arrays.copyOf(source15, source15.length);
+        copyOfRangeSrc15 = Arrays.copyOfRange(source15, 0, source15.length);
+
+        // shallow copy
+        // copyOfSrc32 = Arrays.copyOf(source32, source32.length);
+        // copyOfRangeSrc32 = Arrays.copyOfRange(source32, 0, source32.length);
+
+        for (int i = 0; i < source32.length; i++) {
+            source32clone[i] = source32[i].clone();
+            copyOfSrc32[i] = Arrays.copyOf(source32[i], source32[i].length);
+            copyOfRangeSrc32[i] = Arrays.copyOfRange(source32[i], 0, source32[i].length);
+        }
 
         System.out.println(toCustomString(source15));
 
@@ -117,14 +227,39 @@ public class ArrayTest {
         }
 
         ref15[4] = 750;
+        source15clone[4] = 1050;
+        copyOfSrc15[4] = 120;
+        copyOfRangeSrc15[4] = 250;
+
         ref32[2][1] = 100;
         ref32deep[2][1] = 200;
 
         System.out.println(toCustomString(source15));
         System.out.println(toCustomString(ref15));
+        System.out.println(toCustomString(source15clone));
+        System.out.println(toCustomString(copyOfSrc15));
+        System.out.println(toCustomString(copyOfRangeSrc15));
+
         System.out.println(source32[2][1]);
         System.out.println(ref32[2][1]);
         System.out.println(ref32deep[2][1]);
+        System.out.println(reftest[2][1]);
+        System.out.println(source32clone[2][1]);
+        System.out.println(copyOfSrc32[2][1]);
+        System.out.println(copyOfRangeSrc32[2][1]);
+
+        reftest[2][1] = 300;
+        source32clone[2][1] = 600;
+        copyOfSrc32[2][1] = 900;
+        copyOfRangeSrc32[2][1] = 1200;
+
+        System.out.println(source32[2][1]);
+        System.out.println(ref32[2][1]);
+        System.out.println(ref32deep[2][1]);
+        System.out.println(reftest[2][1]);
+        System.out.println(source32clone[2][1]);
+        System.out.println(copyOfSrc32[2][1]);
+        System.out.println(copyOfRangeSrc32[2][1]);
 
     }
 

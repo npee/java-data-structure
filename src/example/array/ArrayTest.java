@@ -6,7 +6,27 @@ public class ArrayTest {
     public static final int LENGTH = 10;
 
     public static void main(String[] args) {
+        // LENGTH 만큼의 길이를 가진 배열 할당(배열의 크기 = 길이)
         int[] myArray = new int[LENGTH];
+        // 선언과 동시에 배열 초기화. 길이는 4가 된다.
+        int[] myArray2 = {10, 20, 30, 40};
+        int[] myArray2_1;
+        /*
+        // {} 은 배열 초기화 용도이므로 정의할 때는 사용할 수 없다.
+        int[] myArray2_2;
+        myArray2_2 = {1, 2, 3, 4};
+        */
+        // 변수명에 []을 붙이면 C 스타일
+        int myArray3[] = {100, 200, 300, 400};
+        // 2차원 배열 동적할당
+        int[] myArray4[] = new int[5][];
+        int myArray5[][][] = new int[10][][];
+        int myArray6[][] = {{1, 2}, {3, 4}, {5, 6}};
+
+        for (int i = 0; i < myArray2.length; i++) {
+            myArray2[i] += 10;
+            System.out.println("myArray[" + i + "]: " + myArray2[i]);
+        }
 
         add(myArray, 1);
         add(myArray, 2);
@@ -23,6 +43,23 @@ public class ArrayTest {
         for (int i = 0; i < LENGTH; i++) {
             System.out.println("index " + i + ": " + myArray[i]);
         }
+
+        System.out.println(toCustomString(myArray));
+
+        myArray = new int[LENGTH];
+
+        add(myArray, 1);
+        add(myArray, 2);
+        add(myArray, 3);
+        add(myArray, 4);
+        add(myArray, 5);
+        add(myArray, 6);
+        add(myArray, 7);
+        add(myArray, 8);
+        add(myArray, 9);
+        add(myArray, 10);
+
+        remove(myArray, 9);
 
         System.out.println(toCustomString(myArray));
 
@@ -99,8 +136,16 @@ public class ArrayTest {
     }
 
     public static void remove(int[] array, int idx) {
-        for (int i = idx; array[i] != 0; i++) {
-            array[i] = array[i+1];
+        if (array[idx] == 0) {
+            System.out.println("삭제할 데이터가 없습니다.");
+            return;
+        }
+        if (idx == array.length - 1) {
+            array[idx] = 0;
+        } else {
+            for (int i = idx; array[i] != 0; i++) {
+                array[i] = array[i+1];
+            }
         }
     }
 

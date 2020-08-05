@@ -199,120 +199,153 @@ public class ArrayTest {
         int[] target1dDirect = new int[source1d.length];
         int[][] target2dDirect = new int[source2d.length][source2d[0].length];
 
-        // 1차원 배열 복사
-        for (int i = 0; i < source1d.length; i++) {
-            target1dDirect[i] = source1d[i];
-        }
-
-        // 2차원 배열 복사
-        for (int i = 0; i < source2d.length; i++) {
-            for (int j = 0; j < source2d[0].length; j++) {
-                target2dDirect[i][j] = source2d[i][j];
-            }
-        }
-
         System.out.println("직접 복사 - 1차원 배열-------------------");
         printArray(true, source1d);
 
-        target1dDirect[3] = 200;
+        for (int i = 0; i < source1d.length; i++)
+            target1dDirect[i] = source1d[i]; // copy
 
-        System.out.println("복사본 변경 후---------------------------");
+        target1dDirect[3] = 200; // 복사본 값 변경
+
+        System.out.println("복사본 변경 후--------------------------");
         printArray(true, source1d);
         printArray(false, target1dDirect);
         System.out.println("--------------------------------------");
+
         System.out.println("직접 복사 - 2차원 배열-------------------");
         printArray(true, source2d);
 
-        target2dDirect[1][1] = 100;
+        for (int i = 0; i < source2d.length; i++)
+            for (int j = 0; j < source2d[0].length; j++)
+                target2dDirect[i][j] = source2d[i][j]; // copy
 
+        target2dDirect[1][1] = 100; // 복사본 값 변경
+
+        System.out.println("복사본 변경 후--------------------------");
         printArray(false, source2d);
         printArray(false, target2dDirect);
-
+        System.out.println("--------------------------------------");
 
         /** Object.clone() */
         int[] target1dClone;
         int[][] target2dClone;
-
-        target1dClone = source1d.clone();
-
-        // incomplete deep copy
-        target2dClone = source2d.clone();
-
-        // complete deep copy
-        for (int i = 0; i < source2d.length; i++) {
-            target2dClone[i] = source2d[i].clone();
-        }
-
-        printArray(false, target2dClone);
-
-        /** System.arraycopy() */
-        int[] target1dArraycopy = new int[source1d.length];
-        int[][] target2dIncompleteArraycopy = new int[source2d.length][source2d[0].length];
-        int[][] target2dCompleteArraycopy = new int[source2d.length][source2d[0].length];
-
-        System.arraycopy(source1d, 0, target1dArraycopy, 0, source1d.length);
-
-        // incomplete deep copy
-        System.arraycopy(source2d, 0, target2dIncompleteArraycopy, 0, source2d.length);
-
-        // complete deep copy
-        for (int i = 0; i < source2d.length; i++) {
-            System.arraycopy(source2d[i], 0, target2dCompleteArraycopy[i], 0, source2d[0].length);
-        }
-
-        /** Arrays.copyOf(), Arrays.copyOfRange()*/
-        int[] copyOfSrc1d;
-        int[] copyOfRangeSrc1d;
-
-        int[][] copyOfSrc2d;
-        int[][] copyOfRangeSrc2d;
-
-        copyOfSrc1d = Arrays.copyOf(source1d, source1d.length);
-        copyOfRangeSrc1d = Arrays.copyOfRange(source1d, 0, source1d.length);
-
-        // incomplete deep copy
-        copyOfSrc2d= Arrays.copyOf(source2d, source2d.length);
-        copyOfRangeSrc2d = Arrays.copyOfRange(source2d, 0, source2d.length);
-
-        for (int i = 0; i < source2d.length; i++) {
-            copyOfSrc2d[i] = Arrays.copyOf(source2d[i], source2d[i].length);
-            copyOfRangeSrc2d[i] = Arrays.copyOfRange(source2d[i], 0, source2d[i].length);
-        }
-
+        System.out.println("clone() - 1차원 배열--------------------");
         printArray(true, source1d);
+
+        target1dClone = source1d.clone(); // copy
+        target1dClone[4] = 100;
+
+        System.out.println("복사본 변경 후--------------------------");
+        printArray(true, source1d);
+        printArray(false, target1dClone);
+        System.out.println("--------------------------------------");
+
+        System.out.println("clone() - 2차원 배열-------------------");
         printArray(true, source2d);
 
-        source1d[4] = 750;
-        target1dRef[4] = 1050;
-        copyOfSrc1d[4] = 120;
-        copyOfRangeSrc1d[4] = 250;
+        target2dClone = source2d.clone(); // incomplete deep copy
+        target2dClone[1][2] = 200;
 
-        target2dRef[1][1] = 100;
+        System.out.println("복사본 변경 후(얕은 복사)----------------");
+        printArray(true, source2d);
+        printArray(false, target2dClone);
+        source2d[1][2] = 8; // 원상복구
+        System.out.println("--------------------------------------");
 
-        System.out.println(toCustomString(source1d));
-        System.out.println(toCustomString(target1dRef));
-        System.out.println(toCustomString(target1dClone));
-        System.out.println(toCustomString(copyOfSrc1d));
-        System.out.println(toCustomString(copyOfRangeSrc1d));
+        System.out.println("clone() - 2차원 배열--------------------");
+        for (int i = 0; i < source2d.length; i++) {
+            target2dClone[i] = source2d[i].clone(); // complete deep copy
+        }
 
-        System.out.println(source2d[1][1]);
-        System.out.println(target2dRef[1][1]);
-        System.out.println(reftest[1][1]);
-        System.out.println(target2dClone[1][1]);
-        System.out.println(copyOfSrc2d[1][1]);
-        System.out.println(copyOfRangeSrc2d[1][1]);
+        target2dClone[1][2] = 200;
 
-        reftest[1][1] = 300;
-        target2dClone[1][1] = 600;
-        source2d[1][1] = 900;
-        copyOfRangeSrc2d[1][1] = 1200;
+        System.out.println("복사본 변경 후(깊은 복사)----------------");
+        printArray(true, source2d);
+        printArray(false, target2dClone);
+        System.out.println("--------------------------------------");
 
-        System.out.println(source2d[1][1]);
-        System.out.println(target2dRef[1][1]);
-        System.out.println(reftest[1][1]);
-        System.out.println(target2dClone[1][1]);
-        System.out.println(copyOfSrc2d[1][1]);
-        System.out.println(copyOfRangeSrc2d[1][1]);
+
+        /** System.arraycopy() */
+        // clone(): 초기화 필요없음
+        // arraycopy(): 초기화 필요함 - 내용만 카피하기 때문. 변수를 재사용 할 경우 새 인스턴스로 초기화 해야한다.
+        int[] target1dArraycopy = new int[source1d.length];
+        int[][] target2dArraycopy = new int[source2d.length][source2d[0].length];
+
+        System.out.println("arraycopy() - 1차원 배열---------------");
+        printArray(true, source1d);
+
+        System.arraycopy(source1d, 0, target1dArraycopy, 0, source1d.length); // copy
+        target1dArraycopy[1] = 100;
+
+        System.out.println("복사본 변경 후--------------------------");
+        printArray(true, source1d);
+        printArray(false, target1dArraycopy);
+        System.out.println("--------------------------------------");
+
+        System.out.println("arraycopy() - 2차원 배열---------------");
+        printArray(true, source2d);
+
+        // incomplete deep copy
+        System.arraycopy(source2d, 0, target2dArraycopy, 0, source2d.length);
+        target2dArraycopy[1][3] = 500;
+
+        System.out.println("복사본 변경 후(얕은 복사)----------------");
+        printArray(true, source2d);
+        printArray(false, target2dArraycopy);
+        source2d[1][3] = 9;
+        target2dArraycopy = new int[source2d.length][source2d[0].length]; // 레퍼런스 초기화
+        System.out.println("--------------------------------------");
+
+        System.out.println("arraycopy() - 2차원 배열---------------");
+        printArray(true, source2d);
+
+        for (int i = 0; i < source2d.length; i++)
+            System.arraycopy(source2d[i], 0, target2dArraycopy[i], 0, source2d[0].length); // complete deep copy
+        target2dArraycopy[1][3] = 500;
+
+        System.out.println("복사본 변경 후(깊은 복사)----------------");
+        printArray(true, source2d);
+        printArray(false, target2dArraycopy);
+        System.out.println("--------------------------------------");
+
+
+        /** Arrays.copyOf(), Arrays.copyOfRange()*/
+        System.out.println("arraycopy() - 1차원 배열---------------");
+        printArray(true, source1d);
+        // copy
+        int[] copyOfSource1d = Arrays.copyOf(source1d, source1d.length);
+        int[] copyOfRangeSource1d = Arrays.copyOfRange(source1d, 0, source1d.length);
+        System.out.println("복사본 변경 후--------------------------");
+
+        System.out.println("--------------------------------------");
+        printArray(true, source1d);
+        printArray(false, copyOfSource1d);
+        printArray(false, copyOfRangeSource1d);
+        System.out.println("arraycopy() - 2차원 배열---------------");
+        printArray(true, source2d);
+        // incomplete deep copy
+        int[][] copyOfSource2d = Arrays.copyOf(source2d, source2d.length);
+        int[][] copyOfRangeSource2d = Arrays.copyOfRange(source2d, 0, source2d.length);
+
+        System.out.println("복사본 변경 후--------------------------");
+        printArray(true, source2d);
+        printArray(false, copyOfSource2d);
+        printArray(false, copyOfRangeSource2d);
+        System.out.println("--------------------------------------");
+
+        System.out.println("arraycopy() - 2차원 배열---------------");
+        printArray(true, source2d);
+        // complete deep copy
+        for (int i = 0; i < source2d.length; i++) {
+            copyOfSource2d[i] = Arrays.copyOf(source2d[i], source2d[i].length);
+            copyOfRangeSource2d[i] = Arrays.copyOfRange(source2d[i], 0, source2d[i].length);
+        }
+
+        System.out.println("복사본 변경 후--------------------------");
+        printArray(true, source2d);
+        printArray(false, copyOfSource2d);
+        printArray(false, copyOfRangeSource2d);
+        System.out.println("--------------------------------------");
 
     }
 

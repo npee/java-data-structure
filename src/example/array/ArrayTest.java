@@ -323,15 +323,13 @@ public class ArrayTest {
     }
 
     public static int[] deepcopy(int[] array) {
-        int[] dest = new int[array.length];
-        System.arraycopy(array, 0, dest, 0, array.length);
-        return dest;
+        return array.clone();
     }
 
     public static int[][] deepcopy2d(int[][] array) {
         int[][] dest = new int[array.length][array[0].length];
         for (int i = 0; i < array.length; i++) {
-            System.arraycopy(array[i], 0, array[i], 0, array[0].length);
+            dest[i] = array[i].clone();
         }
         return dest;
     }

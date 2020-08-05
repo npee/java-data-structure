@@ -188,32 +188,45 @@ public class ArrayTest {
 
         // copy
         int[] source1d = {5, 10, 15, 20, 25};
-        int[][] source2d = {{10, 20}, {30, 40}, {50, 60}};
+        int[][] source2d = new int[][]{{1, 2, 3, 4, 5}, {6, 7, 8, 9, 10}};
 
-        int[] target1d = source1d; // 참조
-        int[][] target2d = source2d;
+        int[] target1dRef = source1d; // 참조
+        int[][] target2dRef = source2d;
 
         int[][] reftest = new int[source2d.length][source2d[0].length];
 
         /** direct copy */
-        int[][] source2dDirect = new int[][]{{1, 2, 3, 4, 5}, {6, 7, 8, 9, 10}};
-        int[][] target2dDirect = new int[source2dDirect.length][source2dDirect[0].length];
+        int[] target1dDirect = new int[source1d.length];
+        int[][] target2dDirect = new int[source2d.length][source2d[0].length];
 
-        for (int i = 0; i < source2dDirect.length; i++) {
-            for (int j = 0; j < source2dDirect[0].length; j++) {
-                target2dDirect[i][j] = source2dDirect[i][j];
+        // 1차원 배열 복사
+        for (int i = 0; i < source1d.length; i++) {
+            target1dDirect[i] = source1d[i];
+        }
+
+        // 2차원 배열 복사
+        for (int i = 0; i < source2d.length; i++) {
+            for (int j = 0; j < source2d[0].length; j++) {
+                target2dDirect[i][j] = source2d[i][j];
             }
         }
 
+        System.out.println("직접 복사 - 1차원 배열-------------------");
+        printArray(true, source1d);
+
+        target1dDirect[3] = 200;
+
+        System.out.println("복사본 변경 후---------------------------");
+        printArray(true, source1d);
+        printArray(false, target1dDirect);
+        System.out.println("--------------------------------------");
+        System.out.println("직접 복사 - 2차원 배열-------------------");
+        printArray(true, source2d);
+
         target2dDirect[1][1] = 100;
 
-        for (int i = 0; i < source2dDirect.length; i++) {
-            System.out.println(toCustomString(source2dDirect[i]));
-        }
-
-        for (int i = 0; i < target2dDirect.length; i++) {
-            System.out.println(toCustomString(target2dDirect[i]));
-        }
+        printArray(false, source2d);
+        printArray(false, target2dDirect);
 
 
         /** Object.clone() */
@@ -230,7 +243,7 @@ public class ArrayTest {
             target2dClone[i] = source2d[i].clone();
         }
 
-        System.out.println(toCustomString(target2dClone));
+        printArray(false, target2dClone);
 
         /** System.arraycopy() */
         int[] target1dArraycopy = new int[source1d.length];
@@ -266,60 +279,50 @@ public class ArrayTest {
             copyOfRangeSrc2d[i] = Arrays.copyOfRange(source2d[i], 0, source2d[i].length);
         }
 
-        printArray(source1d);
-        printArray(source2d);
+        printArray(true, source1d);
+        printArray(true, source2d);
 
         source1d[4] = 750;
-        target1d[4] = 1050;
+        target1dRef[4] = 1050;
         copyOfSrc1d[4] = 120;
         copyOfRangeSrc1d[4] = 250;
 
-        target2d[2][1] = 100;
+        target2dRef[1][1] = 100;
 
         System.out.println(toCustomString(source1d));
-        System.out.println(toCustomString(target1d));
+        System.out.println(toCustomString(target1dRef));
         System.out.println(toCustomString(target1dClone));
         System.out.println(toCustomString(copyOfSrc1d));
         System.out.println(toCustomString(copyOfRangeSrc1d));
 
-        System.out.println(source2d[2][1]);
-        System.out.println(target2d[2][1]);
-        System.out.println(reftest[2][1]);
-        System.out.println(target2dClone[2][1]);
-        System.out.println(copyOfSrc2d[2][1]);
-        System.out.println(copyOfRangeSrc2d[2][1]);
+        System.out.println(source2d[1][1]);
+        System.out.println(target2dRef[1][1]);
+        System.out.println(reftest[1][1]);
+        System.out.println(target2dClone[1][1]);
+        System.out.println(copyOfSrc2d[1][1]);
+        System.out.println(copyOfRangeSrc2d[1][1]);
 
-        reftest[2][1] = 300;
-        target2dClone[2][1] = 600;
-        source2d[2][1] = 900;
-        copyOfRangeSrc2d[2][1] = 1200;
+        reftest[1][1] = 300;
+        target2dClone[1][1] = 600;
+        source2d[1][1] = 900;
+        copyOfRangeSrc2d[1][1] = 1200;
 
-        System.out.println(source2d[2][1]);
-        System.out.println(target2d[2][1]);
-        System.out.println(reftest[2][1]);
-        System.out.println(target2dClone[2][1]);
-        System.out.println(copyOfSrc2d[2][1]);
-        System.out.println(copyOfRangeSrc2d[2][1]);
-
-        int[] source1dDirect = new int[]{1, 2, 3, 4, 5};
-        int[] target1dDirect = new int[source1dDirect.length];
-
-        for (int i = 0; i < source1dDirect.length; i++) {
-            target1dDirect[i] = source1dDirect[i];
-        }
-        target1dDirect[1] = 10;
-
-        System.out.println(toCustomString(source1dDirect));
-        System.out.println(toCustomString(target1dDirect));
+        System.out.println(source2d[1][1]);
+        System.out.println(target2dRef[1][1]);
+        System.out.println(reftest[1][1]);
+        System.out.println(target2dClone[1][1]);
+        System.out.println(copyOfSrc2d[1][1]);
+        System.out.println(copyOfRangeSrc2d[1][1]);
 
     }
 
-    public static void printArray(Object T) {
+    public static void printArray(boolean isOriginal, Object T) {
+        if (isOriginal) System.out.print("원본  : ");
+        else System.out.print("복사본: ");
         if (T instanceof int[])
             System.out.println(toCustomString((int[]) T));
-        else if (T instanceof int[][]) {
+        else if (T instanceof int[][])
             System.out.println(toCustomString((int[][]) T));
-        }
     }
 
     public static String toCustomString(int[] array) {

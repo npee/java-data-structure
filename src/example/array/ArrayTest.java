@@ -16,6 +16,11 @@ class MutableObject {
     public void setX(int x) {
         this.x = x;
     }
+
+    @Override
+    public String toString() {
+        return "[x: " + this.x + "]";
+    }
 }
 public class ArrayTest {
     public static final int LENGTH = 10;
@@ -115,77 +120,7 @@ public class ArrayTest {
             System.out.println("not equal");
         }
 
-        /** string */
-        String[] strArr = new String[5];
-        String[][] str2dArr = new String[][]{{"aaa", "bbb"}, {"ccc", "ddd"}};
-        strArr[0] = "abc";
-        strArr[1] = "def";
-        strArr[2] = "ghi";
-        strArr[3] = "jkl";
-        strArr[4] = "mno";
-        String[] strRef = strArr;
-        String[] strRef2;
-        strRef[4] = "pqr";
-        String[][] str2dRef;
 
-        for (int i = 0; i < strArr.length; i++) {
-            System.out.println(strArr[i]);
-        }
-
-
-        strRef2 = strArr.clone();
-        strRef2[4] = "stu";
-
-        for (int i = 0; i < strArr.length; i++) {
-            System.out.println(strArr[i]);
-        }
-
-        for (int i = 0; i < strRef2.length; i++) {
-            System.out.println(strRef2[i]);
-        }
-
-        for (int i = 0; i < str2dArr.length; i++) {
-            for (int j = 0; j < str2dArr[0].length; j++) {
-                System.out.println(str2dArr[i][j]);
-            }
-        }
-
-        str2dRef = str2dArr.clone();
-        str2dRef[1][1] = "xxx";
-
-        for (int i = 0; i < str2dArr.length; i++) {
-            for (int j = 0; j < str2dArr[0].length; j++) {
-                System.out.println(str2dArr[i][j]);
-            }
-        }
-
-        /** object */
-        List<MutableObject> mutableObjects = new ArrayList<>();
-        mutableObjects.add(new MutableObject(1));
-        mutableObjects.add(new MutableObject(2));
-        mutableObjects.add(new MutableObject(3));
-        mutableObjects.add(new MutableObject(4));
-
-        List<MutableObject> mutabRef = mutableObjects;
-        List<MutableObject> mutabNew = new ArrayList<>(mutableObjects); // 복사 생성자
-        List<MutableObject> mutabSet = new ArrayList<>(mutableObjects); // 가변 객체 테스트
-
-        for (MutableObject mutableObject : mutableObjects) {
-            System.out.println(mutableObject.x);
-        }
-
-        mutabRef.add(new MutableObject(5));
-        mutabNew.add(new MutableObject(6));
-        // shallow copy(mutable object)
-        mutabSet.get(0).setX(10);
-
-        for (MutableObject mutableObject : mutableObjects) {
-            System.out.println(mutableObject.x);
-        }
-
-        for (MutableObject mutableObject : mutabNew) {
-            System.out.println(mutableObject.x);
-        }
 
         // copy
         int[] source1d = {5, 10, 15, 20, 25};
@@ -369,6 +304,105 @@ public class ArrayTest {
         printArray(false, copyOfRangeSource2d);
         System.out.println("--------------------------------------");
 
+        /** string */
+        String[] strSource1d = {"abc", "def", "ghi", "jkl", "mno"};
+        String[][] strSource2d = new String[][]{{"aaa", "bbb"}, {"ccc", "ddd"}};
+
+        /* shallow copy */
+        System.out.println("문자열 배열 참조 - 1차원 배열------------");
+        printArray(true, strSource1d);
+        String[] strTarget1dRef = strSource1d;
+
+        strTarget1dRef[4] = "pqr";
+
+        System.out.println("복사본 변경 후(얕은 복사)----------------");
+        printArray(true, strSource1d);
+        printArray(false, strTarget1dRef);
+        strSource1d[4] = "mno"; // 원상복구
+        System.out.println("--------------------------------------");
+
+        System.out.println("문자열 배열 참조 - 2차원 배열------------");
+        printArray(true, strSource2d);
+        String[][] strTarget2dRef = strSource2d;
+
+        strTarget2dRef[1][0] = "xxx";
+
+        System.out.println("복사본 변경 후(얕은 복사)----------------");
+        printArray(true, strSource2d);
+        printArray(false, strTarget2dRef);
+        strSource2d[1][0] = "ccc"; // 원상복구
+        System.out.println("--------------------------------------");
+
+
+        /* incomplete deep copy */
+        System.out.println("문자열 배열 clone() - 1차원 배열---------");
+        printArray(true, strSource1d);
+        String[] strTarget1dClone = strSource1d.clone();
+
+        strTarget1dClone[0] = "zzz";
+
+        System.out.println("복사본 변경 후(깊은 복사?)---------------");
+        printArray(true, strSource1d);
+        printArray(false, strTarget1dClone);
+        System.out.println("--------------------------------------");
+
+        System.out.println("문자열 배열 clone() - 2차원 배열---------");
+        printArray(true, strSource2d);
+        String[][] strTarget2dClone = strSource2d.clone();
+
+        strTarget2dClone[1][1] = "ooo";
+
+        System.out.println("복사본 변경 후(불완전 복사)--------------");
+        printArray(true, strSource2d);
+        printArray(false, strTarget2dClone);
+        strSource2d[1][1] = "ddd"; // 원상복구
+        System.out.println("--------------------------------------");
+
+        /* complete deep copy */
+        System.out.println("문자열 배열 clone() - 2차원 배열---------");
+        printArray(true, strSource2d);
+        String[][] strTarget2dDeepClone = new String[strSource2d.length][];
+
+        for (int i = 0; i < source2d.length; i++)
+            strTarget2dDeepClone[i] = strSource2d[i].clone();
+
+        strTarget2dDeepClone[0][0] = "ABC";
+
+        System.out.println("복사본 변경 후(깊은 복사)----------------");
+        printArray(true, strSource2d);
+        printArray(false, strTarget2dDeepClone);
+        System.out.println("--------------------------------------");
+
+
+        /** object */
+        List<MutableObject> mutableObjects = new ArrayList<>();
+        mutableObjects.add(new MutableObject(1));
+        mutableObjects.add(new MutableObject(2));
+        mutableObjects.add(new MutableObject(3));
+        mutableObjects.add(new MutableObject(4));
+
+        List<MutableObject> mutabRef = mutableObjects;
+        List<MutableObject> mutabNew = new ArrayList<>(mutableObjects); // 복사 생성자
+        List<MutableObject> mutabSet = new ArrayList<>(mutableObjects); // 가변 객체 테스트
+
+        for (MutableObject mutableObject : mutableObjects) {
+            System.out.println(mutableObject.x);
+        }
+
+        mutabRef.add(new MutableObject(5));
+        mutabNew.add(new MutableObject(6));
+        // shallow copy(mutable object)
+        mutabSet.get(0).setX(10);
+
+        for (MutableObject mutableObject : mutableObjects) {
+            System.out.println(mutableObject.toString());
+        }
+
+
+        for (MutableObject mutableObject : mutabNew) {
+            System.out.println(mutableObject.toString());
+        }
+
     }
 
     public static void printArray(boolean isOriginal, Object T) {
@@ -389,6 +423,14 @@ public class ArrayTest {
             System.out.println(toCustomString((String[]) T));
         else if (T instanceof String[][])
             System.out.println(toCustomString((String[][]) T));
+        else if (T instanceof List<?>) {
+            if (((List<?>) T).get(0) instanceof MutableObject) {
+                int i = 0;
+                for (MutableObject obj : (List<MutableObject>) T) {
+                    System.out.println("index " + i + ": " + obj.toString());
+                }
+            }
+        }
         else {
             throw new IllegalArgumentException();
         }

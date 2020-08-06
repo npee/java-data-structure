@@ -7,14 +7,14 @@
 * return type: void
 * parameter
     1. Object
-### String toCustomString(int[])
+### String toCustomString(T[])
 * return type: String
 * parameter
-    1. int[]
-### String toCustomString(int[][])
+    1. Generic T[]
+### String toCustomString(T[][])
 * return type: String
 * parameter
-    1. int[][]
+    1. Generic T[]
 ### void add(int[], int)
 * return type: void
 * parameter

@@ -59,7 +59,7 @@ public class ArrayTest {
             System.out.println("index " + i + ": " + myArray[i]);
         }
 
-        System.out.println(toCustomString(myArray));
+        // System.out.println(toCustomString(myArray));
 
         myArray = new int[LENGTH];
 
@@ -76,7 +76,7 @@ public class ArrayTest {
 
         remove(myArray, 9);
 
-        System.out.println(toCustomString(myArray));
+        // System.out.println(toCustomString(myArray));
 
         int[] source1 = new int[LENGTH];
         int[] source2 = new int[LENGTH];
@@ -131,6 +131,7 @@ public class ArrayTest {
         for (int i = 0; i < strArr.length; i++) {
             System.out.println(strArr[i]);
         }
+
 
         strRef2 = strArr.clone();
         strRef2[4] = "stu";
@@ -373,30 +374,43 @@ public class ArrayTest {
     public static void printArray(boolean isOriginal, Object T) {
         if (isOriginal) System.out.print("원본  : ");
         else System.out.print("복사본: ");
-        if (T instanceof int[])
-            System.out.println(toCustomString((int[]) T));
-        else if (T instanceof int[][])
-            System.out.println(toCustomString((int[][]) T));
+        if (T instanceof int[]) {
+            Integer[] newInteger1dArr = Arrays.stream((int[]) T).boxed().toArray(Integer[]::new);
+            System.out.println(toCustomString(newInteger1dArr));
+        }
+        else if (T instanceof int[][]) {
+            Integer[][] newInteger2dArr = new Integer[((int[][]) T).length][];
+            for (int i = 0; i < ((int[][]) T).length; i++) {
+                newInteger2dArr[i] = Arrays.stream(((int[][]) T)[i]).boxed().toArray(Integer[]::new);
+            }
+            System.out.println(toCustomString(newInteger2dArr));
+        }
+        else if (T instanceof String[])
+            System.out.println(toCustomString((String[]) T));
+        else if (T instanceof String[][])
+            System.out.println(toCustomString((String[][]) T));
     }
 
-    public static String toCustomString(int[] array) {
-        String arrayStr = "[";
+    public static <T> String toCustomString(T[][] array) {
+        String arrayStr = "[\n";
         for (int i = 0; i < array.length; i++) {
-            if (i == array.length - 1) {
-                arrayStr += array[i] + "]";
-            } else {
-                arrayStr += array[i] + ", ";
-            }
+            if (i == array.length -1)
+                arrayStr += "\t" + toCustomString(array[i]);
+            else
+                arrayStr += "\t" + toCustomString(array[i]) + ",\n";
         }
+        arrayStr += "]";
         return arrayStr;
     }
 
-    public static String toCustomString(int[][] array) {
-        String arrayStr = "[\n";
+    public static <T> String toCustomString(T[] array) {
+        String arrayStr = "[";
         for (int i = 0; i < array.length; i++) {
-            arrayStr += "\t" + toCustomString(array[i]) + ",\n";
+            if (i == array.length - 1)
+                arrayStr += array[i] + "]";
+            else
+                arrayStr += array[i] + ", ";
         }
-        arrayStr += "]";
         return arrayStr;
     }
 

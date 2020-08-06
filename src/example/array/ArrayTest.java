@@ -389,6 +389,9 @@ public class ArrayTest {
             System.out.println(toCustomString((String[]) T));
         else if (T instanceof String[][])
             System.out.println(toCustomString((String[][]) T));
+        else {
+            throw new IllegalArgumentException();
+        }
     }
 
     public static <T> String toCustomString(T[][] array) {

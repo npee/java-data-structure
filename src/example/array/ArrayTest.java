@@ -190,10 +190,31 @@ public class ArrayTest {
         int[] source1d = {5, 10, 15, 20, 25};
         int[][] source2d = new int[][]{{1, 2, 3, 4, 5}, {6, 7, 8, 9, 10}};
 
-        int[] target1dRef = source1d; // 참조
-        int[][] target2dRef = source2d;
 
-        int[][] reftest = new int[source2d.length][source2d[0].length];
+        /** reference(shallow copy) */
+        int[] target1dRef;
+        int[][] target2dRef;
+
+        System.out.println("참조 - 1차원 배열-----------------------");
+        printArray(true, source1d);
+        target1dRef = source1d; // 참조
+
+        target1dRef[3] = 100;
+
+        System.out.println("복사본 변경 후(얕은 복사------------------");
+        printArray(true, source1d);
+        printArray(false, target1dRef);
+        System.out.println("--------------------------------------");
+
+        System.out.println("참조 - 2차원 배열-----------------------");
+        target2dRef = source2d;
+
+        target2dRef[1][4] = 999;
+
+        System.out.println("복사본 변경 후(얕은 복사------------------");
+        printArray(true, source2d);
+        printArray(false, target2dRef);
+        System.out.println("--------------------------------------");
 
         /** direct copy */
         int[] target1dDirect = new int[source1d.length];

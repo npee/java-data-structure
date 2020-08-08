@@ -9,14 +9,29 @@ public class ListTest {
     public static void main(String[] args) {
         // List<int> intList; // primitive 형은 List의 요소가 될 수 없다.
         List<Integer> intList = new ArrayList<>(); // int를 사용하려면 Wrapper class로 감싸면 된다.
-
-        List<MutableObject> list1 = new ArrayList<>();
+        List<String> strList = new ArrayList<>();
+        List<MutableObject> mutableObjList = new ArrayList<>();
 
         /** 자바에서 제공하는 리스트 메서드 */
+
         /* add */
-        intList.add(1);
-        System.out.println("intList");
+        intList.add(1); // Integer 형으로 바뀌어 들어간다.
+        intList.add(3);
+        intList.add(5);
+
+        strList.add("Java");
+        strList.add("Data");
+        strList.add("Structure");
+
+        mutableObjList.add(new MutableObject(10));
+        mutableObjList.add(new MutableObject(30));
+        mutableObjList.add(new MutableObject(50));
+
         print(intList);
+        print(strList);
+        print(mutableObjList);
+
+
 
 
 //        /** object copy (가변 객체) */

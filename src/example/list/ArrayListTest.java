@@ -4,15 +4,26 @@ import example.MutableObject;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.ListIterator;
 
-public class ListTest {
+public class ArrayListTest {
     public static void main(String[] args) {
         // List<int> intList; // primitive 형은 List의 요소가 될 수 없다.
+        // List<Integer> intList = new List<>(); // List는 Interfate이다.
         List<Integer> intList = new ArrayList<>(); // int를 사용하려면 Wrapper class로 감싸면 된다.
+        ArrayList<Integer> intArrayList = new ArrayList<>(); // 좀 더 구체적인 선언방법
         List<String> strList = new ArrayList<>();
         List<MutableObject> mutableObjList = new ArrayList<>();
 
-        /** 자바에서 제공하는 리스트 메서드 */
+        /** [rt.jar] java.util.ArrayList.class
+         * ArrayList
+         * 데이터를 *배열로 관리*하며, 순서에 변화가 일어나면 새로운 배열로 데이터를 *복사*하여 해결한다.
+         * 배열로 관리하기 때문에 배열의 인덱스가 갖는 장점을 그대로 가지고 있다.
+         * 순서에 변동이 생길 때 마다 새 배열을 만들어 복사하는 작업이 반복되므로
+         * 이런 작업이 빈번하다면 성능 저하가 생길 수 있다.
+         * */
+
+        /** 자바에서 제공하는 ArrayList 메서드 */
 
         /* add */
         intList.add(1); // Integer 형으로 바뀌어 들어간다.
@@ -30,6 +41,22 @@ public class ListTest {
         print(intList);
         print(strList);
         print(mutableObjList);
+
+        ListIterator<Integer> listIterator = intList.listIterator();
+
+        while (listIterator.hasNext()) {
+            System.out.println(listIterator.next());
+            if (!listIterator.hasNext()) {
+                while (listIterator.hasPrevious()) {
+                    System.out.println(listIterator.previous());
+                }
+                break;
+            }
+        }
+
+
+        /* get */
+        intList.get(2).toString();
 
 
 

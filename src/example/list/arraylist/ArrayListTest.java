@@ -1,4 +1,4 @@
-package example.list;
+package example.list.arraylist;
 
 import example.MutableObject;
 

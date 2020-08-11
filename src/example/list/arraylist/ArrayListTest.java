@@ -237,13 +237,17 @@ public class ArrayListTest {
 
     public static <T> String toCustomString(List<?> T) {
         StringBuilder listStr = new StringBuilder("[");
-        for (int i = 0; i < T.size(); i++) {
-            listStr.append(T.get(i).toString());
-            if (i == T.size() - 1) {
-                listStr.append("]");
-            } else {
-                listStr.append(", ");
+        if (T.size() != 0) {
+            for (int i = 0; i < T.size(); i++) {
+                listStr.append(T.get(i).toString());
+                if (i == T.size() - 1) {
+                    listStr.append("]");
+                } else {
+                    listStr.append(", ");
+                }
             }
+        } else {
+            listStr.append("]");
         }
 
         return listStr.toString();

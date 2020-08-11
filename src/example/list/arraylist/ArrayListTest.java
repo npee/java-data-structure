@@ -2,15 +2,17 @@ package example.list.arraylist;
 
 import example.MutableObject;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
 
 public class ArrayListTest {
     public static void main(String[] args) {
-        // List<int> intList; // primitive 형은 List의 요소가 될 수 없다.
-        // List<Integer> intList = new List<>(); // List는 Interfate이다.
-        List<Integer> intList = new ArrayList<>(); // int를 사용하려면 Wrapper class로 감싸면 된다.
+        // List<int> numList; // primitive 형은 List의 요소가 될 수 없다.
+        // List<Integer> numList = new List<>(); // List는 Interfate이다.
+        List<Number> numList = new ArrayList<>(); // 숫자를 요소로 사용하려면 Wrapper class로 감싸면 된다.
         ArrayList<Integer> intArrayList = new ArrayList<>(); // 좀 더 구체적인 선언방법
         List<String> strList = new ArrayList<>();
         List<MutableObject> mutableObjList = new ArrayList<>();
@@ -25,25 +27,50 @@ public class ArrayListTest {
 
         /** 자바에서 제공하는 ArrayList 메서드 */
 
-        /* add */
-        intList.add(1); // Integer 형으로 바뀌어 들어간다.
-        intList.add(3);
-        intList.add(5);
+        /* add, addAll */
+        numList.add(1); // Integer 형으로 바뀌어 들어간다(Boxing).
+        numList.add(3);
+        numList.add(5);
 
         strList.add("Java");
         strList.add("Data");
         strList.add("Structure");
 
         mutableObjList.add(new MutableObject(10));
-        mutableObjList.add(new MutableObject(30));
-        mutableObjList.add(new MutableObject(50));
+        // 인덱스를 지정하지 않은 경우에는 성공여부를 반환한다.
+        System.out.println("추가 성공? " + mutableObjList.add(new MutableObject(30)));
+        mutableObjList.add(1, new MutableObject(50)); // 1번 인덱스에 삽입된다.
 
-        print(intList);
+        print(numList);
         print(strList);
         print(mutableObjList);
 
-        ListIterator<Integer> listIterator = intList.listIterator();
+        List<Integer> intList = new ArrayList<>();
+        List<Float> floatList = new ArrayList<>();
 
+        intList.add(10);
+        intList.add(20);
+        intList.add(30);
+
+        floatList.add(1.2f);
+        floatList.add(1.5F);
+
+        // addAll은 기존 자료형의 확장된 자료형을 요소로 하는 리스트를 더할 수 있다. (성공 여부 리턴)
+        // addAll(Collections<? extends Number> c);
+        numList.addAll(intList); // Integer는 Number의 확장
+        numList.addAll(floatList); // Float도 Number의 확장
+
+        print(numList); // [1, 3, 5, 10, 20, 30, 1.2, 1.5]
+
+        /* Iterator, ListIterator */
+        Iterator<String> iterator = strList.iterator();
+        while (iterator.hasNext()) {
+            System.out.println(iterator.next());
+        }
+
+        ListIterator<Number> listIterator = numList.listIterator();
+        ListIterator<Number> listIteratorByIndex = numList.listIterator(1); // 2번째 요소부터 순회한다.
+        // Iterator를 확장한 ListIterator를 이용하여 리스트를 순회, 역순회 할 수 있다.
         while (listIterator.hasNext()) {
             System.out.println(listIterator.next());
             if (!listIterator.hasNext()) {
@@ -53,10 +80,17 @@ public class ArrayListTest {
                 break;
             }
         }
+        
+
+        /* size */
+        System.out.printf("strList의 크기(길이): %d\n", strList.size());
+
+        /* clear */
+        numList.clear();
+
+        print(numList);
 
 
-        /* get */
-        intList.get(2).toString();
 
 
 

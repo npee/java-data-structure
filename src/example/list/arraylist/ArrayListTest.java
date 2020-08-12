@@ -1,6 +1,7 @@
 package example.list.arraylist;
 
 import example.MutableObject;
+import sun.security.ec.point.ProjectivePoint;
 
 import java.lang.reflect.Array;
 import java.util.ArrayList;
@@ -62,6 +63,12 @@ public class ArrayListTest {
 
         print(numList); // [1, 3, 5, 10, 20, 30, 1.2, 1.5]
 
+        /* size */
+        System.out.printf("strList의 크기(길이): %d\n", strList.size());
+
+        /* get */
+        System.out.println("mutableObjList의 2번째 요소의 x값: " + mutableObjList.get(1).x);
+
         /* Iterator, ListIterator */
         Iterator<String> iterator = strList.iterator();
         while (iterator.hasNext()) {
@@ -72,23 +79,51 @@ public class ArrayListTest {
         ListIterator<Number> listIteratorByIndex = numList.listIterator(1); // 2번째 요소부터 순회한다.
         // Iterator를 확장한 ListIterator를 이용하여 리스트를 순회, 역순회 할 수 있다.
         while (listIterator.hasNext()) {
-            System.out.println(listIterator.next());
+            System.out.print(listIterator.next() + ", ");
             if (!listIterator.hasNext()) {
                 while (listIterator.hasPrevious()) {
-                    System.out.println(listIterator.previous());
+                    System.out.print(listIterator.previous() + ", ");
                 }
+                System.out.println();
                 break;
             }
         }
-        
 
-        /* size */
-        System.out.printf("strList의 크기(길이): %d\n", strList.size());
+
+        /* indexOf, lastIndexOf */
+        numList.add(1.5f);
+        print(numList); // [1, 3, 5, 10, 20, 30, 1.2, 1.5, 1.5]
+
+        System.out.print("1.5가 처음으로 나타나는 인덱스(앞에서부터 검색): ");
+        System.out.println(numList.indexOf(1.5f)); // 7
+
+        System.out.print("1.5가 마지막으로 나타나는 인덱스(뒤에서부터 검색): ");
+        System.out.println(numList.lastIndexOf(1.5f)); // 8
+
+        // String 객체의 character나 substring의 index를 추출하는 데 유용하다.
+        System.out.println("strList의 3번째 요소에서 r이 처음으로 나타나는 인덱스: ");
+        System.out.println(strList.get(2).indexOf('r')); // 2
+
+        System.out.println("strList의 3번째 요소에서 r이 마지막으로 나타나는 인덱스: ");
+        System.out.println(strList.get(2).lastIndexOf('r')); // 7
+
+
+        /* set */
+        strList.set(1, "Collection");
+        strList.set(2, "Framework");
+
+        print(strList); // [Java, Collection, Framework]
+
 
         /* clear */
-        numList.clear();
+        strList.clear();
 
-        print(numList);
+        System.out.printf("strList의 크기(길이): %d\n", strList.size());
+        print(strList); // []
+
+
+        /* java 8 */
+
 
 
 

@@ -1,13 +1,13 @@
 package example.list.arraylist;
 
 import example.MutableObject;
-import sun.security.ec.point.ProjectivePoint;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
+
+import static example.configuration.PrintConfig.print;
 
 public class ArrayListTest {
     public static void main(String[] args) {
@@ -268,38 +268,5 @@ public class ArrayListTest {
 //        print(true, sources);
 //        print(false, targetDirect);
 //        System.out.println("--------------------------------------\n");
-    }
-
-    public static <T> String toCustomString(List<?> T) {
-        StringBuilder listStr = new StringBuilder("[");
-        if (T.size() != 0) {
-            for (int i = 0; i < T.size(); i++) {
-                listStr.append(T.get(i).toString());
-                if (i == T.size() - 1) {
-                    listStr.append("]");
-                } else {
-                    listStr.append(", ");
-                }
-            }
-        } else {
-            listStr.append("]");
-        }
-
-        return listStr.toString();
-    }
-
-    public static void print(Object T) {
-        if (T instanceof List<?>) {
-            System.out.println(toCustomString((List<?>) T));
-        }
-        else {
-            throw new IllegalArgumentException();
-        }
-    }
-
-    public static void print(boolean isOriginal, Object T) {
-        if (isOriginal) System.out.print("원본  : ");
-        else System.out.print("복사본: ");
-        print(T);
     }
 }

@@ -2,10 +2,7 @@ package example.list.arraylist;
 
 import example.MutableObject;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.ListIterator;
+import java.util.*;
 
 import static example.configuration.PrintConfig.print;
 
@@ -116,14 +113,53 @@ public class ArrayListTest {
 
 
         /* clear */
-        strList.clear();
+        // strList.clear();
 
         System.out.printf("strList의 크기(길이): %d\n", strList.size());
         print(strList); // []
 
+        /* remove, removeAll */
+
+        /* retainAll */
+
+        /* isEmpty */
+        /* contains, containsAll */
+        /* subList */
+
+        /**/
+        /**/
+
+        /* replaceAll */
+        strList.replaceAll(str -> str += "(replaced)");
+        print(strList);
+
+        // 제거
+        strList.replaceAll(str -> str.replaceAll("\\(replaced\\)", ""));
+        print(strList);
+
+        /* sort */
+
+        // 1. Comparable 인터페이스를 구현하여 compareTo 메서드 오버라이드
+        // 2. Comparator 인터페이스를 익명으로 구현하여 compare 메서드 오버라이드
+        Collections.sort(strList, new Comparator<String>() {
+            @Override
+            public int compare(String str1, String str2) {
+                return str1.compareTo(str2);
+            }
+        });
+
+        // 3. compareTo 메서드를 람다식으로 호출
+        Collections.sort(strList, (str1, str2) -> str1.compareTo(str2));
+
+        // 4. sort 메서드를 list에서 호출
+        strList.sort((str1, str2) -> str1.compareTo(str2));
+
+        // 5. compareTo 메서드를 double colon으로 호출
+        strList.sort(String::compareTo);
+
+        print(strList);
 
         /* java 8 */
-
 
 
 

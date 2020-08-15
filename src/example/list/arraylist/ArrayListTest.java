@@ -1,6 +1,7 @@
 package example.list.arraylist;
 
 import example.MutableObject;
+import sun.security.ec.point.ProjectivePoint;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -9,12 +10,15 @@ import static example.configuration.PrintConfig.print;
 
 public class ArrayListTest {
     public static void main(String[] args) {
-        // List<int> numList; // primitive 형은 List의 요소가 될 수 없다.
-        // List<Integer> numList = new List<>(); // List는 Interfate이다.
-        List<Number> numList = new ArrayList<>(); // 숫자를 요소로 사용하려면 Wrapper class로 감싸면 된다.
-        ArrayList<Integer> intArrayList = new ArrayList<>(); // 좀 더 구체적인 선언방법
-        List<String> strList = new ArrayList<>();
-        List<MutableObject> mutableObjList = new ArrayList<>();
+        // List<int> originNumList; // primitive 형은 List의 요소가 될 수 없다.
+        // List<Integer> originNumList = new List<>(); // List는 Interfate이다.
+        List<Number> originNumList = new ArrayList<>(); // 숫자를 요소로 사용하려면 Wrapper class로 감싸면 된다.
+        ArrayList<Integer> originIntArrayList = new ArrayList<>(); // 좀 더 구체적인 선언방법
+        List<String> originStrList = new ArrayList<>();
+        List<MutableObject> originMutableObjList = new ArrayList<MutableObject>(){{
+            add(new MutableObject(5));
+            add(new MutableObject(15));
+        }};
 
         /** [rt.jar] java.util.ArrayList.class
          * ArrayList
@@ -24,8 +28,168 @@ public class ArrayListTest {
          * 이런 작업이 빈번하다면 성능 저하가 생길 수 있다.
          * */
 
-        /* 복사본으로 테스트하기 위하여 복사 기능부터 테스트 */
+        /* 복사본으로 테스트하기 위하여 복사 기능부터 테스트(하단) */
         /* Collection은 깊은 복사를 지원하지 않으므로 직접 구현해야 한다. */
+
+
+
+
+        /** 자바에서 제공하는 ArrayList 메서드 */
+
+        /* add, addAll */
+        originNumList.add(1); // Integer 형으로 바뀌어 들어간다(Boxing).
+        originNumList.add(3);
+        originNumList.add(5);
+
+        originStrList.add("Java");
+        originStrList.add("Data");
+        originStrList.add("Structure");
+
+        originMutableObjList.add(new MutableObject(10));
+        // 인덱스를 지정하지 않은 경우에는 성공여부를 반환한다.
+        System.out.println("추가 성공? " + originMutableObjList.add(new MutableObject(30)));
+        originMutableObjList.add(1, new MutableObject(50)); // 1번 인덱스에 삽입된다.
+
+        print(originNumList);
+        print(originStrList);
+        print(originMutableObjList);
+
+        /* 사용할 리스트 복사 */
+        // 불변 객체를 요소로 하면 얕은 복사로 테스트해도 된다.
+        List<Number> numList = new ArrayList<>(originNumList);
+        List<String> strList = new ArrayList<>(originStrList);
+
+        // 불변 객체는 직접 복사를 해준다.
+        List<MutableObject> mutableObjList = new ArrayList<>();
+        for (MutableObject obj : originMutableObjList) {
+            mutableObjList.add(new MutableObject(obj.x));
+        }
+
+        List<Integer> intList = new ArrayList<>();
+        List<Float> floatList = new ArrayList<>();
+
+        intList.add(10);
+        intList.add(20);
+        intList.add(30);
+
+        floatList.add(1.2f);
+        floatList.add(1.5F);
+
+        // addAll은 기존 자료형의 확장된 자료형을 요소로 하는 리스트를 더할 수 있다. (성공 여부 리턴)
+        // addAll(Collections<? extends Number> c);
+        numList.addAll(intList); // Integer는 Number의 확장
+        numList.addAll(floatList); // Float도 Number의 확장
+
+        print(numList); // [1, 3, 5, 10, 20, 30, 1.2, 1.5]
+
+        /* size */
+        System.out.printf("strList의 크기(길이): %d\n", strList.size());
+
+        /* get */
+        System.out.println("mutableObjList의 2번째 요소의 x값: " + mutableObjList.get(1).x);
+
+        /* Iterator, ListIterator */
+        Iterator<String> iterator = strList.iterator();
+        while (iterator.hasNext()) {
+            System.out.println(iterator.next());
+        }
+
+        ListIterator<Number> listIterator = numList.listIterator();
+        ListIterator<Number> listIteratorByIndex = numList.listIterator(1); // 2번째 요소부터 순회한다.
+        // Iterator를 확장한 ListIterator를 이용하여 리스트를 순회, 역순회 할 수 있다.
+        while (listIterator.hasNext()) {
+            System.out.print(listIterator.next() + ", ");
+            if (!listIterator.hasNext()) {
+                while (listIterator.hasPrevious()) {
+                    System.out.print(listIterator.previous() + ", ");
+                }
+                System.out.println();
+                break;
+            }
+        }
+
+
+        /* indexOf, lastIndexOf */
+        numList.add(1.5f);
+        print(numList); // [1, 3, 5, 10, 20, 30, 1.2, 1.5, 1.5]
+
+        System.out.print("1.5가 처음으로 나타나는 인덱스(앞에서부터 검색): ");
+        System.out.println(numList.indexOf(1.5f)); // 7
+
+        System.out.print("1.5가 마지막으로 나타나는 인덱스(뒤에서부터 검색): ");
+        System.out.println(numList.lastIndexOf(1.5f)); // 8
+
+        // String 객체의 character나 substring의 index를 추출하는 데 유용하다.
+        System.out.println("strList의 3번째 요소에서 r이 처음으로 나타나는 인덱스: ");
+        System.out.println(strList.get(2).indexOf('r')); // 2
+
+        System.out.println("strList의 3번째 요소에서 r이 마지막으로 나타나는 인덱스: ");
+        System.out.println(strList.get(2).lastIndexOf('r')); // 7
+
+
+        /* set */
+        strList.set(1, "Collection");
+        strList.set(2, "Framework");
+
+        print(strList); // [Java, Collection, Framework]
+
+
+        /* clear */
+        strList.clear();
+
+        System.out.printf("strList의 크기(길이): %d\n", strList.size());
+        print(strList); // []
+
+        strList = new ArrayList<>(originStrList);
+
+
+
+        /* remove, removeAll */
+
+        /* retainAll */
+
+        /* isEmpty */
+        /* contains, containsAll */
+        /* subList */
+
+        /**/
+        /**/
+
+        /* replaceAll */
+        strList.replaceAll(str -> str += "(replaced)");
+        print(strList);
+
+        // 제거
+        strList.replaceAll(str -> str.replaceAll("\\(replaced\\)", ""));
+        print(strList);
+
+        /* sort */
+
+        // 1. Comparable 인터페이스를 구현하여 compareTo 메서드 오버라이드
+        // 2. Comparator 인터페이스를 익명으로 구현하여 compare 메서드 오버라이드
+        Collections.sort(strList, new Comparator<String>() {
+            @Override
+            public int compare(String str1, String str2) {
+                return str1.compareTo(str2);
+            }
+        });
+
+        // 3. compareTo 메서드를 람다식으로 호출
+        Collections.sort(strList, (str1, str2) -> str1.compareTo(str2));
+
+        // 4. sort 메서드를 list에서 호출
+        strList.sort((str1, str2) -> str1.compareTo(str2));
+
+        // 5. compareTo 메서드를 double colon으로 호출
+        strList.sort(String::compareTo);
+
+        print(strList);
+
+        print(true, originStrList);
+        /* java 8 */
+
+
+
 
         /* object copy (가변 객체) */
         List<MutableObject> sources = new ArrayList<>();
@@ -165,153 +329,6 @@ public class ArrayListTest {
         print(true, sources);
         print(false, targetDirect);
         System.out.println("--------------------------------------\n");
-
-
-
-        /** 자바에서 제공하는 ArrayList 메서드 */
-
-        /* add, addAll */
-        numList.add(1); // Integer 형으로 바뀌어 들어간다(Boxing).
-        numList.add(3);
-        numList.add(5);
-
-        strList.add("Java");
-        strList.add("Data");
-        strList.add("Structure");
-
-        mutableObjList.add(new MutableObject(10));
-        // 인덱스를 지정하지 않은 경우에는 성공여부를 반환한다.
-        System.out.println("추가 성공? " + mutableObjList.add(new MutableObject(30)));
-        mutableObjList.add(1, new MutableObject(50)); // 1번 인덱스에 삽입된다.
-
-        print(numList);
-        print(strList);
-        print(mutableObjList);
-
-        List<Integer> intList = new ArrayList<>();
-        List<Float> floatList = new ArrayList<>();
-
-        intList.add(10);
-        intList.add(20);
-        intList.add(30);
-
-        floatList.add(1.2f);
-        floatList.add(1.5F);
-
-        // addAll은 기존 자료형의 확장된 자료형을 요소로 하는 리스트를 더할 수 있다. (성공 여부 리턴)
-        // addAll(Collections<? extends Number> c);
-        numList.addAll(intList); // Integer는 Number의 확장
-        numList.addAll(floatList); // Float도 Number의 확장
-
-        print(numList); // [1, 3, 5, 10, 20, 30, 1.2, 1.5]
-
-        /* size */
-        System.out.printf("strList의 크기(길이): %d\n", strList.size());
-
-        /* get */
-        System.out.println("mutableObjList의 2번째 요소의 x값: " + mutableObjList.get(1).x);
-
-        /* Iterator, ListIterator */
-        Iterator<String> iterator = strList.iterator();
-        while (iterator.hasNext()) {
-            System.out.println(iterator.next());
-        }
-
-        ListIterator<Number> listIterator = numList.listIterator();
-        ListIterator<Number> listIteratorByIndex = numList.listIterator(1); // 2번째 요소부터 순회한다.
-        // Iterator를 확장한 ListIterator를 이용하여 리스트를 순회, 역순회 할 수 있다.
-        while (listIterator.hasNext()) {
-            System.out.print(listIterator.next() + ", ");
-            if (!listIterator.hasNext()) {
-                while (listIterator.hasPrevious()) {
-                    System.out.print(listIterator.previous() + ", ");
-                }
-                System.out.println();
-                break;
-            }
-        }
-
-
-        /* indexOf, lastIndexOf */
-        numList.add(1.5f);
-        print(numList); // [1, 3, 5, 10, 20, 30, 1.2, 1.5, 1.5]
-
-        System.out.print("1.5가 처음으로 나타나는 인덱스(앞에서부터 검색): ");
-        System.out.println(numList.indexOf(1.5f)); // 7
-
-        System.out.print("1.5가 마지막으로 나타나는 인덱스(뒤에서부터 검색): ");
-        System.out.println(numList.lastIndexOf(1.5f)); // 8
-
-        // String 객체의 character나 substring의 index를 추출하는 데 유용하다.
-        System.out.println("strList의 3번째 요소에서 r이 처음으로 나타나는 인덱스: ");
-        System.out.println(strList.get(2).indexOf('r')); // 2
-
-        System.out.println("strList의 3번째 요소에서 r이 마지막으로 나타나는 인덱스: ");
-        System.out.println(strList.get(2).lastIndexOf('r')); // 7
-
-
-        /* set */
-        strList.set(1, "Collection");
-        strList.set(2, "Framework");
-
-        print(strList); // [Java, Collection, Framework]
-
-
-        /* clear */
-        strList.clear();
-
-        System.out.printf("strList의 크기(길이): %d\n", strList.size());
-        print(strList); // []
-
-
-
-        /* remove, removeAll */
-
-        /* retainAll */
-
-        /* isEmpty */
-        /* contains, containsAll */
-        /* subList */
-
-        /**/
-        /**/
-
-        /* replaceAll */
-        strList.replaceAll(str -> str += "(replaced)");
-        print(strList);
-
-        // 제거
-        strList.replaceAll(str -> str.replaceAll("\\(replaced\\)", ""));
-        print(strList);
-
-        /* sort */
-
-        // 1. Comparable 인터페이스를 구현하여 compareTo 메서드 오버라이드
-        // 2. Comparator 인터페이스를 익명으로 구현하여 compare 메서드 오버라이드
-        Collections.sort(strList, new Comparator<String>() {
-            @Override
-            public int compare(String str1, String str2) {
-                return str1.compareTo(str2);
-            }
-        });
-
-        // 3. compareTo 메서드를 람다식으로 호출
-        Collections.sort(strList, (str1, str2) -> str1.compareTo(str2));
-
-        // 4. sort 메서드를 list에서 호출
-        strList.sort((str1, str2) -> str1.compareTo(str2));
-
-        // 5. compareTo 메서드를 double colon으로 호출
-        strList.sort(String::compareTo);
-
-        print(strList);
-
-        /* java 8 */
-
-
-
-
-
 
 
     }

@@ -1,7 +1,6 @@
 package example.list.arraylist;
 
 import example.MutableObject;
-import sun.security.ec.point.ProjectivePoint;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -29,9 +28,7 @@ public class ArrayListTest {
          * */
 
         /* 복사본으로 테스트하기 위하여 복사 기능부터 테스트(하단) */
-        /* Collection은 깊은 복사를 지원하지 않으므로 직접 구현해야 한다. */
-
-
+        /* Collection은 깊은 복사를 지원하지 않으므로 직접 구현해야 한다.(하단) */
 
 
         /** 자바에서 제공하는 ArrayList 메서드 */
@@ -87,6 +84,12 @@ public class ArrayListTest {
 
         /* get */
         System.out.println("mutableObjList의 2번째 요소의 x값: " + mutableObjList.get(1).x);
+
+        /* hashCode */
+        // Collection에서 기본으로 제공하는 메서드이다.
+        // hash값이 필요한 Collection에서 주로 사용한다.
+        // 객체가 같은지 비교하는 용도이며, 오버라이딩 하지 않았을 경우 기본적으로 객체의 메모리 주소를 반환한다.
+        System.out.println(strList.hashCode());
 
         /* Iterator, ListIterator */
         Iterator<String> iterator = strList.iterator();
@@ -179,7 +182,14 @@ public class ArrayListTest {
         strList.removeAll(languageList);
 
         // "C" 가 발견되어 제거되었다.
+        System.out.print("removeAll(str) if str is element of languageList: ");
         print(strList); // [Hello, Language, Data]
+
+
+        /* removeIf */
+        strList.removeIf(str -> str.equals("Data"));
+        System.out.print("removeIf str equals \"Data\": ");
+        print(strList); // [Hello, Language]
 
 
         /* retainAll */
@@ -188,28 +198,51 @@ public class ArrayListTest {
 
         // 파라미터로 받은 컬렉션에 포함된 객체와 같은 것만 남긴다. (교집합)
         strList.retainAll(languageList);
-
         print(strList); // [Java]
 
-        // Shallow copy
-        strList = new ArrayList<>(originStrList);
 
         /* isEmpty */
+        // Shallow copy
+        strList = new ArrayList<>(originStrList);
         System.out.println("Is strList emtpy?: " + (strList.isEmpty() ? "true" : "false"));
 
 
         /* contains, containsAll */
         System.out.println("Does strList have Java?: " +  (strList.contains("Java") ? "true" : "false"));
-
         System.out.println("Does strList have all elements of languageList?: " +  (strList.containsAll(languageList) ? "true" : "false"));
+
 
         /* subList */
         // 첫 번쨰 파라미터의 인덱스부터 두 번쨰 파라미터의 인덱스 전의 요소까지 잘라낸다.
         // (0, 2) 이면 0번쨰부터 1번째(2번째 직전) 까지 추출한다.
         print(strList.subList(0, 2)); // [Java, Data]
 
-        /**/
-        /**/
+
+        /* toArray */
+        // String[] strArray = (String[]) strList.toArray(); // Error
+        // String[] 배열에 리스트를 복사하고 싶으면 파라미터로 타겟 배열을 전달한다.
+        Object[] strArray = strList.toArray();
+        System.out.println("toArray()");
+        for (Object obj: strArray) {
+            System.out.println(obj.toString());
+        }
+
+        String[] strArray2 = new String[strList.size()]; // 리스트 사이즈만큼의 길이를 가진 배열 생성
+        strList.toArray(strArray2);
+        System.out.println("toArray(String[])");
+        for (Object obj: strArray2) {
+            System.out.println(obj.toString());
+        }
+
+        // 반대로 배열에서 리스트로 변환할 때 Arrays.asList 메서드를 사용할 수 있다.
+        // 단, ArrayList가 아니므로 추가 연산이 필요하면 ArrayList의 복사 생성자를 이용한다.
+        List<String> newStrList = Arrays.asList(strArray2); // ArrayList가 아님
+        // newStrList.add("C"); // Error
+
+        List<String> newStrList2 = new ArrayList<>(Arrays.asList(strArray2));
+        newStrList2.add("C");
+        print(newStrList2);
+
 
         /* replaceAll */
         strList.replaceAll(str -> str += "(replaced)");

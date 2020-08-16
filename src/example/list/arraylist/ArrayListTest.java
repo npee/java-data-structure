@@ -1,7 +1,6 @@
 package example.list.arraylist;
 
 import example.MutableObject;
-import sun.security.ec.point.ProjectivePoint;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -29,9 +28,7 @@ public class ArrayListTest {
          * */
 
         /* 복사본으로 테스트하기 위하여 복사 기능부터 테스트(하단) */
-        /* Collection은 깊은 복사를 지원하지 않으므로 직접 구현해야 한다. */
-
-
+        /* Collection은 깊은 복사를 지원하지 않으므로 직접 구현해야 한다.(하단) */
 
 
         /** 자바에서 제공하는 ArrayList 메서드 */
@@ -88,6 +85,12 @@ public class ArrayListTest {
         /* get */
         System.out.println("mutableObjList의 2번째 요소의 x값: " + mutableObjList.get(1).x);
 
+        /* hashCode */
+        // Collection에서 기본으로 제공하는 메서드이다.
+        // hash값이 필요한 Collection에서 주로 사용한다.
+        // 객체가 같은지 비교하는 용도이며, 오버라이딩 하지 않았을 경우 기본적으로 객체의 메모리 주소를 반환한다.
+        System.out.println(strList.hashCode());
+
         /* Iterator, ListIterator */
         Iterator<String> iterator = strList.iterator();
         while (iterator.hasNext()) {
@@ -140,20 +143,106 @@ public class ArrayListTest {
         System.out.printf("strList의 크기(길이): %d\n", strList.size());
         print(strList); // []
 
+        // Shallow copy
         strList = new ArrayList<>(originStrList);
-
 
 
         /* remove, removeAll */
 
+        // 1. index로 제거하기
+        strList.remove(2);
+        print(strList); // [Java, Data]
+
+        // 2. 객체로 제거하기
+        strList.remove("Java");
+        print(strList); // [Data]
+
+        strList.add("Hello");
+        strList.add("Language");
+        strList.add("Data");
+
+        // 2-1. 같은 객체가 여러개 일 경우
+        strList.remove("Data");
+
+        // 제일 앞에 나오는 하나만 제거된다.
+        print(strList); // [Hello, Language, Data]
+
+        // removeAll
+        // 같은 객체를 여러개 지우는 데 쓰는 메서드가 아니다.
+        List<String> languageList = new ArrayList<>();
+        languageList.add("Java");
+        languageList.add("C");
+        languageList.add("C++");
+
+        strList.add("C");
+
+        print(strList); // [Hello, Language, Data, C]
+
+        // languageList에 포함된 것 중에 같은 것이 있으면 삭제한다. (차집합)
+        strList.removeAll(languageList);
+
+        // "C" 가 발견되어 제거되었다.
+        System.out.print("removeAll(str) if str is element of languageList: ");
+        print(strList); // [Hello, Language, Data]
+
+
+        /* removeIf */
+        strList.removeIf(str -> str.equals("Data"));
+        System.out.print("removeIf str equals \"Data\": ");
+        print(strList); // [Hello, Language]
+
+
         /* retainAll */
+        // Shallow copy로 초기화
+        strList = new ArrayList<>(originStrList);
+
+        // 파라미터로 받은 컬렉션에 포함된 객체와 같은 것만 남긴다. (교집합)
+        strList.retainAll(languageList);
+        print(strList); // [Java]
+
 
         /* isEmpty */
-        /* contains, containsAll */
-        /* subList */
+        // Shallow copy
+        strList = new ArrayList<>(originStrList);
+        System.out.println("Is strList emtpy?: " + (strList.isEmpty() ? "true" : "false"));
 
-        /**/
-        /**/
+
+        /* contains, containsAll */
+        System.out.println("Does strList have Java?: " +  (strList.contains("Java") ? "true" : "false"));
+        System.out.println("Does strList have all elements of languageList?: " +  (strList.containsAll(languageList) ? "true" : "false"));
+
+
+        /* subList */
+        // 첫 번쨰 파라미터의 인덱스부터 두 번쨰 파라미터의 인덱스 전의 요소까지 잘라낸다.
+        // (0, 2) 이면 0번쨰부터 1번째(2번째 직전) 까지 추출한다.
+        print(strList.subList(0, 2)); // [Java, Data]
+
+
+        /* toArray */
+        // String[] strArray = (String[]) strList.toArray(); // Error
+        // String[] 배열에 리스트를 복사하고 싶으면 파라미터로 타겟 배열을 전달한다.
+        Object[] strArray = strList.toArray();
+        System.out.println("toArray()");
+        for (Object obj: strArray) {
+            System.out.println(obj.toString());
+        }
+
+        String[] strArray2 = new String[strList.size()]; // 리스트 사이즈만큼의 길이를 가진 배열 생성
+        strList.toArray(strArray2);
+        System.out.println("toArray(String[])");
+        for (Object obj: strArray2) {
+            System.out.println(obj.toString());
+        }
+
+        // 반대로 배열에서 리스트로 변환할 때 Arrays.asList 메서드를 사용할 수 있다.
+        // 단, ArrayList가 아니므로 추가 연산이 필요하면 ArrayList의 복사 생성자를 이용한다.
+        List<String> newStrList = Arrays.asList(strArray2); // ArrayList가 아님
+        // newStrList.add("C"); // Error
+
+        List<String> newStrList2 = new ArrayList<>(Arrays.asList(strArray2));
+        newStrList2.add("C");
+        print(newStrList2);
+
 
         /* replaceAll */
         strList.replaceAll(str -> str += "(replaced)");
@@ -186,149 +275,154 @@ public class ArrayListTest {
         print(strList);
 
         print(true, originStrList);
+
+
+
+
+
         /* java 8 */
 
 
 
 
-        /* object copy (가변 객체) */
-        List<MutableObject> sources = new ArrayList<>();
-        sources.add(new MutableObject(1));
-        sources.add(new MutableObject(2));
-        sources.add(new MutableObject(3));
-        sources.add(new MutableObject(4));
-
-
-        // reference(shallow copy)
-        System.out.println("객체 리스트 - 참조");
-        print(true, sources);
-        List<MutableObject> targetRef = sources;
-
-        targetRef.add(new MutableObject(50));
-        System.out.println("복사본 변경 후(얕은 복사)");
-        print(true, sources);
-        print(false, targetRef);
-        sources.remove(sources.size() - 1); // 추가했던 객체 제거
-        System.out.println("--------------------------------------\n");
-
-
-
-        // copy constructor
-        System.out.println("객체 리스트 - 복사 생성자");
-        print(true, sources);
-        List<MutableObject> targetConstructor = new ArrayList<>(sources); // 복사 생성자
-
-        System.out.println("1. 복사본에 객체 추가 후(깊은 복사?)");
-        targetConstructor.add(new MutableObject(100));
-
-        print(true, sources);
-        print(false, targetConstructor);
-        System.out.println("--------------------------------------\n");
-
-        System.out.println("2. 복사본 객체 변경 후(얕은 복사가 됨)");
-        targetConstructor.get(0).setX(50);
-
-        print(true, sources);
-        print(false, targetConstructor);
-
-        sources.get(0).setX(1); // 원상복구
-        System.out.println("--------------------------------------\n");
-
-
-        // Collections.copy()
-        System.out.println("객체 리스트 - copy()");
-        print(true, sources);
-        List<MutableObject> targetCopy = new ArrayList<>();
-        targetCopy.add(new MutableObject(0)); // 더미 객체로 메모리 확보
-        targetCopy.add(new MutableObject(0));
-        targetCopy.add(new MutableObject(0));
-        targetCopy.add(new MutableObject(0));
-
-        // 메모리 용량이 미리 확보되어 있어야 해서 때문에 클론 생성 용도로 쓰기 힘들다
-        Collections.copy(targetCopy, sources);
-
-        System.out.println("1. 복사본에 객체 추가 후(깊은 복사?)");
-        targetCopy.add(new MutableObject(10));
-
-        print(true, sources);
-        print(false, targetCopy);
-        System.out.println("--------------------------------------\n");
-
-        System.out.println("2. 복사본 객체 변경 후(얕은 복사가 됨)");
-        targetCopy.get(1).setX(50);
-
-        print(true, sources);
-        print(false, targetCopy);
-
-        targetCopy.get(1).setX(2); // 원상복구
-        System.out.println("--------------------------------------\n");
-
-
-        // Collections.addAll()
-        System.out.println("객체 리스트 - addAll()");
-        print(true, sources);
-        List<MutableObject> targetAddAll = new ArrayList<>();
-        targetAddAll.addAll(sources);
-
-        System.out.println("1. 복사본에 객체 추가 후(깊은 복사?)");
-        targetAddAll.add(new MutableObject(300));
-
-        print(true, sources);
-        print(false, targetAddAll);
-        System.out.println("--------------------------------------\n");
-
-        System.out.println("2. 복사본 객체 변경 후(값 변경됨)");
-        targetAddAll.get(2).setX(20);
-
-        print(true, sources);
-        print(false, targetAddAll);
-
-        sources.get(2).setX(3); // 원상복구
-        System.out.println("--------------------------------------\n");
-
-
-        // with stream
-        System.out.println("객체 리스트 - stream() 이용)");
-        print(true, sources);
-        List<MutableObject> targetStream;
-        targetStream = sources.stream().collect(Collectors.toList());
-
-        System.out.println("1. 복사본에 객체 추가 후(깊은 복사?)");
-        targetStream.add(new MutableObject(500));
-
-        print(true, sources);
-        print(false, targetStream);
-        System.out.println("--------------------------------------\n");
-
-        System.out.println("2. 복사본 객체 변경 후(얕은 복사가 됨)");
-        targetStream.get(0).setX(50);
-
-        print(true, sources);
-        print(false, targetStream);
-
-        sources.get(0).setX(1); // 원상복구
-        System.out.println("--------------------------------------\n");
-
-
-        // direct copy
-        System.out.println("객체 리스트 - 직접 복사");
-        print(true, sources);
-        List<MutableObject> targetDirect = new ArrayList<>();
-        for (MutableObject source : sources) {
-            targetDirect.add(new MutableObject(source.x));
-        }
-        System.out.println("1. 복사본에 객체 추가 후(깊은 복사?)");
-        targetDirect.add(new MutableObject(50));
-
-        print(true, sources);
-        print(false, targetDirect);
-
-        System.out.println("2. 복사본 객체 변경 후(깊은 복사!)");
-        targetDirect.get(0).setX(100);
-
-        print(true, sources);
-        print(false, targetDirect);
-        System.out.println("--------------------------------------\n");
+//        /* object copy (가변 객체) */
+//        List<MutableObject> sources = new ArrayList<>();
+//        sources.add(new MutableObject(1));
+//        sources.add(new MutableObject(2));
+//        sources.add(new MutableObject(3));
+//        sources.add(new MutableObject(4));
+//
+//
+//        // reference(shallow copy)
+//        System.out.println("객체 리스트 - 참조");
+//        print(true, sources);
+//        List<MutableObject> targetRef = sources;
+//
+//        targetRef.add(new MutableObject(50));
+//        System.out.println("복사본 변경 후(얕은 복사)");
+//        print(true, sources);
+//        print(false, targetRef);
+//        sources.remove(sources.size() - 1); // 추가했던 객체 제거
+//        System.out.println("--------------------------------------\n");
+//
+//
+//
+//        // copy constructor
+//        System.out.println("객체 리스트 - 복사 생성자");
+//        print(true, sources);
+//        List<MutableObject> targetConstructor = new ArrayList<>(sources); // 복사 생성자
+//
+//        System.out.println("1. 복사본에 객체 추가 후(깊은 복사?)");
+//        targetConstructor.add(new MutableObject(100));
+//
+//        print(true, sources);
+//        print(false, targetConstructor);
+//        System.out.println("--------------------------------------\n");
+//
+//        System.out.println("2. 복사본 객체 변경 후(얕은 복사가 됨)");
+//        targetConstructor.get(0).setX(50);
+//
+//        print(true, sources);
+//        print(false, targetConstructor);
+//
+//        sources.get(0).setX(1); // 원상복구
+//        System.out.println("--------------------------------------\n");
+//
+//
+//        // Collections.copy()
+//        System.out.println("객체 리스트 - copy()");
+//        print(true, sources);
+//        List<MutableObject> targetCopy = new ArrayList<>();
+//        targetCopy.add(new MutableObject(0)); // 더미 객체로 메모리 확보
+//        targetCopy.add(new MutableObject(0));
+//        targetCopy.add(new MutableObject(0));
+//        targetCopy.add(new MutableObject(0));
+//
+//        // 메모리 용량이 미리 확보되어 있어야 해서 때문에 클론 생성 용도로 쓰기 힘들다
+//        Collections.copy(targetCopy, sources);
+//
+//        System.out.println("1. 복사본에 객체 추가 후(깊은 복사?)");
+//        targetCopy.add(new MutableObject(10));
+//
+//        print(true, sources);
+//        print(false, targetCopy);
+//        System.out.println("--------------------------------------\n");
+//
+//        System.out.println("2. 복사본 객체 변경 후(얕은 복사가 됨)");
+//        targetCopy.get(1).setX(50);
+//
+//        print(true, sources);
+//        print(false, targetCopy);
+//
+//        targetCopy.get(1).setX(2); // 원상복구
+//        System.out.println("--------------------------------------\n");
+//
+//
+//        // Collections.addAll()
+//        System.out.println("객체 리스트 - addAll()");
+//        print(true, sources);
+//        List<MutableObject> targetAddAll = new ArrayList<>();
+//        targetAddAll.addAll(sources);
+//
+//        System.out.println("1. 복사본에 객체 추가 후(깊은 복사?)");
+//        targetAddAll.add(new MutableObject(300));
+//
+//        print(true, sources);
+//        print(false, targetAddAll);
+//        System.out.println("--------------------------------------\n");
+//
+//        System.out.println("2. 복사본 객체 변경 후(값 변경됨)");
+//        targetAddAll.get(2).setX(20);
+//
+//        print(true, sources);
+//        print(false, targetAddAll);
+//
+//        sources.get(2).setX(3); // 원상복구
+//        System.out.println("--------------------------------------\n");
+//
+//
+//        // with stream
+//        System.out.println("객체 리스트 - stream() 이용)");
+//        print(true, sources);
+//        List<MutableObject> targetStream;
+//        targetStream = sources.stream().collect(Collectors.toList());
+//
+//        System.out.println("1. 복사본에 객체 추가 후(깊은 복사?)");
+//        targetStream.add(new MutableObject(500));
+//
+//        print(true, sources);
+//        print(false, targetStream);
+//        System.out.println("--------------------------------------\n");
+//
+//        System.out.println("2. 복사본 객체 변경 후(얕은 복사가 됨)");
+//        targetStream.get(0).setX(50);
+//
+//        print(true, sources);
+//        print(false, targetStream);
+//
+//        sources.get(0).setX(1); // 원상복구
+//        System.out.println("--------------------------------------\n");
+//
+//
+//        // direct copy
+//        System.out.println("객체 리스트 - 직접 복사");
+//        print(true, sources);
+//        List<MutableObject> targetDirect = new ArrayList<>();
+//        for (MutableObject source : sources) {
+//            targetDirect.add(new MutableObject(source.x));
+//        }
+//        System.out.println("1. 복사본에 객체 추가 후(깊은 복사?)");
+//        targetDirect.add(new MutableObject(50));
+//
+//        print(true, sources);
+//        print(false, targetDirect);
+//
+//        System.out.println("2. 복사본 객체 변경 후(깊은 복사!)");
+//        targetDirect.get(0).setX(100);
+//
+//        print(true, sources);
+//        print(false, targetDirect);
+//        System.out.println("--------------------------------------\n");
 
 
     }

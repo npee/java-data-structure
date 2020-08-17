@@ -3,6 +3,7 @@ package example.list.arraylist;
 import example.MutableObject;
 
 import java.util.*;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 import static example.configuration.PrintConfig.print;
@@ -111,6 +112,12 @@ public class ArrayListTest {
             }
         }
 
+        Iterator<String> iterator1 = strList.iterator();
+
+        while (iterator1.hasNext()) {
+            System.out.print(iterator1.next() + ", ");
+        }
+
         ListIterator<String> listIterator2 = strList.listIterator(2);
         System.out.println();
 
@@ -149,7 +156,7 @@ public class ArrayListTest {
 
 
         /* set */
-        strList.set(1, "Collection");
+        System.out.println(strList.set(1, "Collection"));
         strList.set(2, "Framework");
 
         print(strList); // [Java, Collection, Framework]
@@ -205,9 +212,28 @@ public class ArrayListTest {
 
 
         /* removeIf */
+        strList.add("Java");
+        strList.add("Data");
+        strList.add("Structure");
+        strList.add("Data");
+        strList.add("C");
+        strList.add("C#");
+        strList.add("C++");
+
         strList.removeIf(str -> str.equals("Data"));
         System.out.print("removeIf str equals \"Data\": ");
-        print(strList); // [Hello, Language]
+        print(strList); // [Hello, Language, Java, Structure, C, C#, C++]
+
+        strList.removeIf(Predicate.isEqual("Hello").or(Predicate.isEqual("Language")));
+        print(strList); // [Java, Structure, C, C#, C++]
+
+        strList.removeIf(new Predicate<String>() {
+            @Override
+            public boolean test(String s) {
+                return s.contains("C");
+            }
+        });
+        print(strList); // [Java, Structure]
 
 
         /* retainAll */
@@ -233,7 +259,9 @@ public class ArrayListTest {
         /* subList */
         // 첫 번쨰 파라미터의 인덱스부터 두 번쨰 파라미터의 인덱스 전의 요소까지 잘라낸다.
         // (0, 2) 이면 0번쨰부터 1번째(2번째 직전) 까지 추출한다.
-        print(strList.subList(0, 2)); // [Java, Data]
+        // print(strList.subList(0, 2)); // [Java, Data]
+        strList.subList(0, 2).forEach(System.out::println);
+        print(strList);
 
 
         /* toArray */

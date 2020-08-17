@@ -111,6 +111,24 @@ public class ArrayListTest {
             }
         }
 
+        ListIterator<String> listIterator2 = strList.listIterator(2);
+        System.out.println();
+
+        while (listIterator2.hasPrevious()) {
+            System.out.print(listIterator2.previousIndex() + ": " + listIterator2.previous() + ", ");
+        }
+        System.out.println();
+
+        listIterator2 = strList.listIterator(2);
+
+        while (listIterator2.hasNext()) {
+            System.out.print(listIterator2.nextIndex() + ": " + listIterator2.next() + ", ");
+        }
+        System.out.println();
+
+
+
+
 
         /* indexOf, lastIndexOf */
         numList.add(1.5f);

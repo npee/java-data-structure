@@ -277,12 +277,76 @@ public class ArrayListTest {
         print(true, originStrList);
 
 
-
-
-
         /* java 8 */
 
+        intList.add(40);
+        intList.add(50);
+        intList.add(60);
+        intList.add(70);
+        intList.add(80);
+        intList.add(90);
 
+        print(intList);
+
+        /* spliterator */
+
+        intList.sort(Collections.reverseOrder()); // 역순 정렬
+        Spliterator<Integer> integerSpliterator = intList.spliterator();
+
+
+        // 위에서 만든 spliterator 나누기
+        Spliterator<Integer> integerSpliterator2 = integerSpliterator.trySplit();
+
+        // size 체크
+        System.out.println(integerSpliterator.estimateSize());
+        System.out.println(integerSpliterator.getExactSizeIfKnown()); // SIZED 특성을 가질 때 estimateSize() 대신 사용가능
+
+        // 순회 출력
+        // 단일 쓰레드에서는 forEachRemaining 메서드를 사용하고
+        // 다중 쓰레드(병렬 프로세싱)에서는 tryAdvance 메서드를 사용한다.
+        integerSpliterator.forEachRemaining(System.out::println); // 50 40 30 20 10
+        System.out.println("-----------");
+        integerSpliterator2.forEachRemaining(System.out::println); // 90 80 70 60
+
+        // 순회 후 size 체크
+        System.out.println(integerSpliterator.estimateSize()); // 순회가 끝나면 0이다
+        System.out.println(integerSpliterator.getExactSizeIfKnown());
+
+        // 사용된 Comparator 체크
+        // System.out.println(integerSpliterator.getComparator()); // Error. SORTED 속성이 필요하다.
+
+        // Integer Spliterator 특성 체크
+        if (integerSpliterator.hasCharacteristics(Spliterator.ORDERED)) {
+            System.out.println("ORDERED");
+        }
+
+        if (integerSpliterator.hasCharacteristics(Spliterator.DISTINCT)) {
+            System.out.println("DISTINCT");
+        }
+
+        if (integerSpliterator.hasCharacteristics(Spliterator.SORTED)) {
+            System.out.println("SORTED");
+        }
+
+        if (integerSpliterator.hasCharacteristics(Spliterator.SIZED)) {
+            System.out.println("SIZED");
+        }
+
+        if (integerSpliterator.hasCharacteristics(Spliterator.CONCURRENT)) {
+            System.out.println("CONCURRENT");
+        }
+
+        if (integerSpliterator.hasCharacteristics(Spliterator.IMMUTABLE)) {
+            System.out.println("IMMUTABLE");
+        }
+
+        if (integerSpliterator.hasCharacteristics(Spliterator.NONNULL)) {
+            System.out.println("NONNULL");
+        }
+
+        if (integerSpliterator.hasCharacteristics(Spliterator.SUBSIZED)) {
+            System.out.println("SUBSIZED");
+        }
 
 
 //        /* object copy (가변 객체) */

@@ -270,14 +270,17 @@ public class ArrayListTest {
         Object[] strArray = strList.toArray();
         System.out.println("toArray()");
         for (Object obj: strArray) {
-            System.out.println(obj.toString());
+            System.out.println(obj);
         }
 
-        String[] strArray2 = new String[strList.size()]; // 리스트 사이즈만큼의 길이를 가진 배열 생성
-        strList.toArray(strArray2);
+        // String[] strArray2 = new String[strList.size()]; // 리스트 사이즈만큼의 길이를 가진 배열 생성
+        // strList.toArray(strArray2);
+
+        String[] strArray2 = strList.toArray(new String[0]); // 한줄로 가장 간결하게 하는 방법
+
         System.out.println("toArray(String[])");
-        for (Object obj: strArray2) {
-            System.out.println(obj.toString());
+        for (String str: strArray2) {
+            System.out.println(str);
         }
 
         // 반대로 배열에서 리스트로 변환할 때 Arrays.asList 메서드를 사용할 수 있다.
@@ -294,8 +297,13 @@ public class ArrayListTest {
         strList.replaceAll(str -> str += "(replaced)");
         print(strList);
 
+
         // 제거
         strList.replaceAll(str -> str.replaceAll("\\(replaced\\)", ""));
+        print(strList);
+
+        strList.replaceAll(s -> s + "-replaced");
+
         print(strList);
 
         /* sort */
@@ -336,7 +344,7 @@ public class ArrayListTest {
 
         /* spliterator */
 
-        intList.sort(Collections.reverseOrder()); // 역순 정렬
+        // intList.sort(Collections.reverseOrder()); // 역순 정렬
         Spliterator<Integer> integerSpliterator = intList.spliterator();
 
 
@@ -352,7 +360,7 @@ public class ArrayListTest {
         // 순회되지 않은 요소들에 대한 순회
         integerSpliterator.forEachRemaining(System.out::println); // 50 40 30 20 10
         System.out.println("-----------");
-        // integerSpliterator2.forEachRemaining(System.out::println); // 90 80 70 60
+        integerSpliterator2.forEachRemaining(System.out::println); // 90 80 70 60
         // 순회되지 않은 요소에 대한 체크 후 액션
         integerSpliterator.tryAdvance(System.out::println); // 아무일도 일어나지 않음(순회 완료된 Spliterator)
         integerSpliterator2.tryAdvance(System.out::println); // 90

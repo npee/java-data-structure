@@ -381,8 +381,81 @@ strList.forEach(System.out::println); // Java Data Structure
 ```
 
 #### `toArray`
+
+1. Object[] toArray()
+    * return type: Object[] - Object를 요소로 하는 배열을 반환한다.
+    * parameter: 없음
+2. T[] toArray(T[] a)
+    * return type: T[] - 파라미터로 받은 배열의 요소 타입과 같은 요소 타입을 가진 배열을 반환한다.
+    * parameter: T[]
+
+```$xslt
+List<String> strList = new ArrayList<>();
+
+strList.add("Java");
+strList.add("Data");
+strList.add("Structure");
+
+Object[] objArray = strList.toArray();
+for (Object obj: objArray) {
+    System.out.println(obj); // Java Data Structure
+}
+
+String[] strArray = strList.toArray(new String[0]);
+for (String str: strArray) {
+    System.out.println(str); // Java Data Structure
+}
+
+```
 #### `replaceAll`
+리스트의 각 요소에 대하여 연산 결과로 교체한다.
+* return type: void
+* parameter:
+    1. UnaryOperator<E> operator - 연산 식(람다식)
+```$xslt
+List<String> strList = new ArrayList<>();
+
+strList.add("Java");
+strList.add("Data");
+strList.add("Structure");
+
+strList.replaceAll(str -> str += "(replaced)");
+
+strList.forEach(System.out::println); // Java(replaced) Data(replaced) Structure(replaced)
+
+```
+
 #### `spliterator` (java 8)
+객체가 배치된 구역을 나누어 순회할 수 있게 설계된 `Spliterator` 인터페이스에 의에 구현된다. 순차적으로 하나씩 순회하는
+`tryAdvance()` 메서드와 모두 순회하는 `forEachRemaining()`메서드로 접근할 수 있다.  
+Collection의 특징을 정의하고 있어, 특징에 따라 사용할 수 있는 메서드가 다르다. 어떤 특징이 있는지 알아보려면 `characteristics()`
+메서드를 이용한다.  
+`trySplit()`에 의해 나누어진 각 `Spliterator`는 병렬 연산을 적용할 수 있다.
+* return type: Spliterator<E>
+* parameter: 없음
+```$xslt
+List<Integer> intList = new ArrayList<>();
+
+intList.add(10);
+intList.add(20);
+intList.add(30);
+intList.add(40);
+intList.add(50);
+intList.add(60);
+intList.add(70);
+intList.add(80);
+intList.add(90);
+
+Spliterator<Integer> intSpliterator = intList.spliterator();
+Spliterator<Integer> splitted = intSpliterator.trySplit();
+
+intSpliterator.forEachRemaining(System.out::println); // 50 60 70 80 90
+// splitted.forEachRemaining(System.out::println); // 10 20 30 40
+
+splitted.tryAdvance(System.out::println); // 10
+splitted.tryAdvance(System.out::println); // 20
+
+```
 
 #### sort
 

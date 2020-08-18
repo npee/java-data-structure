@@ -409,11 +409,41 @@ public class ArrayListTest {
 
         /* copy */
 
-        // copyTest();
+        copyTest();
         
     }
 
     public static void copyTest() {
+        List<String> strList = new ArrayList<>();
+
+        strList.add("Java");
+        strList.add("Data");
+        strList.add("Structure");
+
+        // List<String> newStrList = strList;
+        List<String> newStrList = new ArrayList<>(strList);
+
+        newStrList.remove(2);
+
+        print(true, strList);
+        print(false, newStrList);
+
+        List<MutableObject> mutableObjectList = new ArrayList<>();
+        mutableObjectList.add(new MutableObject(0));
+        mutableObjectList.add(new MutableObject(1));
+        mutableObjectList.add(new MutableObject(2));
+        mutableObjectList.add(new MutableObject(3));
+        mutableObjectList.add(new MutableObject(4));
+
+        List<MutableObject> newMutableObjectList = new ArrayList<>(mutableObjectList);
+        newMutableObjectList.get(0).setX(10);
+
+        mutableObjectList.forEach(obj -> System.out.println(obj.x));
+        newMutableObjectList.forEach(obj -> System.out.println(obj.x));
+
+
+
+
         /* object copy (가변 객체) */
         List<MutableObject> sources = new ArrayList<>();
         sources.add(new MutableObject(1));

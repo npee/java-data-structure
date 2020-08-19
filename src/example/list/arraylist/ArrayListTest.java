@@ -421,7 +421,22 @@ public class ArrayListTest {
         strList.add("Structure");
 
         // List<String> newStrList = strList;
-        List<String> newStrList = new ArrayList<>(strList);
+        // List<String> newStrList = new ArrayList<>(strList);
+        // List<String> newStrList = new ArrayList<String>(){{
+        //     add("");
+        //     add("");
+        //     add("");
+        // }};
+        // Collections.copy(newStrList, strList);
+
+        // List<String> newStrList = new ArrayList<>();
+        // newStrList.addAll(strList);
+
+        // List<String> newStrList = strList.stream().collect(Collectors.toList());
+
+        List<String> newStrList = new ArrayList<>();
+
+        strList.forEach(newStrList::add);
 
         newStrList.remove(2);
 

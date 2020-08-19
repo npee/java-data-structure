@@ -6,7 +6,47 @@
 * 인덱스를 가진다.
     * 인덱스로 요소에 접근할 수 있어서 편리하다.
     
-## basic branch
+## Features
+### main
+- [ArrayList 만들기](#arraylist-생성)
+- [add](#add)
+- [addAll](#addall)
+- [size](#size)
+- [get](#get)
+- [hashCode](#hashcode)
+- [iterator](#iterator)
+- [listIterator](#listiterator)
+- [indexOf, lastIndexOf](#indexof-lastindexof)
+- [set](#set)
+- [clear](#clear)
+- [remove](#remove)
+- [removeIf](#removeif-java-8)
+- [removeAll](#removeall)
+- [retainAll](#retainall)
+- [isEmpty](#isempty)
+- [contains](#contains)
+- [containsAll](#containsall)
+- [subList](#sublist)
+- [toArray](#toarray)
+- [replaceAll](#replaceall)
+- [spliterator(java 8)](#spliterator-java-8)
+
+### sort
+- [Collections.sort](#collectionssort)
+
+### copy
+#### Shallow copy
+- [Reference](#참조)
+- [Copy constructor](#복사-생성자)
+- [Collections.copy](#collectionscopy)
+- [Collections.addAll](#collectionsaddall)
+- [Stream](#stream-이용-java-8)
+
+#### Deep copy
+- [Direct copy](#직접-복사)
+
+## Example
+
 ### ArrayList 생성
 * Primitive Type은 List의 요소가 될 수 없다.
     * Wrapper class를 이용하여 List로 만들 수 있다.
@@ -457,7 +497,54 @@ splitted.tryAdvance(System.out::println); // 20
 ```
 
 ### sort
+#### `Collections.sort()`
+* case 1 - 기존의 Comparable 객체를 요소로 하는 경우
+    * public static <T extends Comparable<? super T>> void sort(@NotNull java.util.List<T> list)
+      
+파라미터로 전달할 List의 요소가 Comparable 인터페이스를 확장한 요소라면 위 메서드를 이용하면 된다.
 
+```$xslt
+List<String> strList = new ArrayList<String>(){{
+    add("Java");
+    add("C");
+    add("C++");
+    add("C#");
+    add("Python");
+}};
+
+Collections.sort(strList);
+
+strList.forEach(System.out::println); // C, C#, C++, Java, Python
+
+```
+* case 2 - Custom 객체를 요소로 하는 경우
+    * public static <T> void sort(@NotNull java.util.List<T> list, @Nullable java.util.Comparator<? super T> c)  
+    
+정렬 기준을 직접 정해야 하므로 `Comparator`의 비교 메서드 `compare()`를 오버라이드하여 두 번째 파라미터로 전달한다.
+```$xslt
+List<MutablaObject> mutableObjList = new ArrayList<MutableObject>(){{
+    add(new MutableObject(20));
+    add(new MutableObject(10));
+    add(new MutableObject(50));
+    add(new MutableObject(40));
+    add(new MutableObject(20));
+}};
+
+Collections.sort(mutableObjList, new Comparator<MutableObject>() {
+    @Override
+    public int compare(MutableObject o1, MutableObject o2) {
+        return o1.x > o2.x ? 1 : -1; // 오름차순 정렬
+    }
+});
+
+/* 같은 표현
+Collections.sort(mutableObjList, (o1, o2) -> o1.x > o2.x ? 1 : -1); // Lambda
+mutableObjList.sort((o1, o2) -> o1.x > o2.x ? 1 : -1); // List에서 바로 sort 메서드를 불러도 된다.
+*/
+
+mutableObjList.forEach(obj -> System.out.println(obj.x)); // 10 20 20 40 50
+
+```
 
 ### copy
 #### 얕은 복사(Shallow copy)
@@ -527,7 +614,7 @@ mutableObjectList.forEach(obj -> System.out.println(obj.x)); // 10 1 2 3 4 (원�
 newMutableObjectList.forEach(obj -> System.out.println(obj.x)); // 10 1 2 3 4
 ```
 
-##### Collections.copy()
+##### Collections.copy
 `Collections`에서 제공하는 복사 메서드이다. 단, 복사될 리스트의 용량(Size가 아닌 Capacity)이 확보되어 있어야 하기 때문에
 새로운 클론을 만드는 용도로는 사용하기 힘들다.  
 첫 번째 파라미터로 target list를, 두 번째 파라미터로 source list를 넘겨준다.  
@@ -555,7 +642,7 @@ strList.forEach(System.out::println); // Java Data Structure
 newStrList.forEach(System.out::println); // Java Data
 
 ```
-##### Collections.addAll()
+##### Collections.addAll
 파라미터로 전달받은 리스트의 모든 요소를 호출한 리스트의 뒤에 붙이는 개념이다.  
 빈 리스트로 호출하게 되면 결국 복사의 의미가 되므로 `Collections.copy()`와 결과가 비슷하지만
 공간을 미리 준비할 필요가 없다는 점에서 훨씬 편리하다.  
@@ -602,7 +689,7 @@ newStrList.forEach(System.out::println); // Java Data
 Collection을 완벽하게 복사하는 메서드는 구현되어있지 않으므로
 객체 참조의 참조까지 완전히 복사(깊은 복사)하려면 하나하나 똑같이 생성하여 추가할 수밖에 없다.
 
-#####직접 복사
+##### 직접 복사
 리스트를 순회하면서 똑같은 새로운 객체를 만들어 새 리스트에 추가하는 방식으로 사용한다.
 
 * case 1 - 불변 객체를 요소로 하는 경우

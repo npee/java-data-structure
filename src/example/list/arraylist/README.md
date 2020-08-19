@@ -606,6 +606,7 @@ Collection을 완벽하게 복사하는 메서드는 구현되어있지 않으�
 리스트를 순회하면서 똑같은 새로운 객체를 만들어 새 리스트에 추가하는 방식으로 사용한다.
 
 * case 1 - 불변 객체를 요소로 하는 경우
+어떤 방식으로든 루프를 돌리면 된다. 불변 객체의 경우는 위에서 했던 얕은 복사를 쓰는게 편리하다.
 ```$xslt
 List<String> strList = new ArrayList<>();
 
@@ -613,7 +614,32 @@ strList.add("Java");
 strList.add("Data");
 strList.add("Structure");
 
+strList.forEach(newStrList::add);
+
+newStrList.remove(2);
+
+strList.forEach(System.out::println); // Java Data Structure
+newStrList.forEach(System.out::println); // Java Data
 
 ```
 
-* case 2 - 가변 객체를 요소로 하는 경우
+* **case 2 - 가변 객체를 요소로 하는 경우**
+```$xslt
+List<MutableObject> mutableObjectList = new ArrayList<>();
+
+mutableObjectList.add(new MutableObject(0));
+mutableObjectList.add(new MutableObject(1));
+mutableObjectList.add(new MutableObject(2));
+mutableObjectList.add(new MutableObject(3));
+mutableObjectList.add(new MutableObject(4));
+
+List<MutableObject> newMutableObjectList = new ArrayList<>(); // 빈 ArrayList
+mutableObjectList.forEach(obj -> newMutableObjectList.add(new MutableObject(obj.x)));
+// -> 같은 내용으로 새로운 객체를 만들어 더한다
+
+newMutableObjectList.get(0).setX(10); // 새 리스트의 0번 인덱스의 요소의 필드를 10으로 변경
+
+mutableObjectList.forEach(obj -> System.out.println(obj.x)); // 0 1 2 3 4 (원본 유지) // 복사 생성자와 비교됨 
+newMutableObjectList.forEach(obj -> System.out.println(obj.x)); // 10 1 2 3 4
+
+```

@@ -407,9 +407,35 @@ public class ArrayListTest {
             System.out.println("SUBSIZED");
         }
 
+        /* sort */
+
+        strList = new ArrayList<String>(){{
+            add("Java");
+            add("C");
+            add("C++");
+            add("C#");
+            add("Python");
+        }};
+
+        mutableObjList = new ArrayList<MutableObject>(){{
+            add(new MutableObject(20));
+            add(new MutableObject(10));
+            add(new MutableObject(50));
+            add(new MutableObject(40));
+            add(new MutableObject(20));
+        }};
+
+
+        Collections.sort(strList);
+        // Collections.sort(mutableObjList);
+        mutableObjList.sort((o1, o2) -> o1.x > o2.x ? 1 : -1);
+
+        print(strList);
+        print(mutableObjList);
+
         /* copy */
 
-        copyTest();
+        // copyTest();
         
     }
 

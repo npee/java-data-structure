@@ -450,7 +450,11 @@ public class ArrayListTest {
         mutableObjectList.add(new MutableObject(3));
         mutableObjectList.add(new MutableObject(4));
 
-        List<MutableObject> newMutableObjectList = new ArrayList<>(mutableObjectList);
+        // List<MutableObject> newMutableObjectList = new ArrayList<>(mutableObjectList);
+        List<MutableObject> newMutableObjectList = new ArrayList<>();
+
+        mutableObjectList.forEach(obj -> newMutableObjectList.add(new MutableObject(obj.x)));
+
         newMutableObjectList.get(0).setX(10);
 
         mutableObjectList.forEach(obj -> System.out.println(obj.x));

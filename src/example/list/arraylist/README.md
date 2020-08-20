@@ -496,8 +496,8 @@ splitted.tryAdvance(System.out::println); // 20
 
 ```
 
-### sort
-#### `Collections.sort()`
+## Example(sort)
+### `Collections.sort`
 * case 1 - 기존의 Comparable 객체를 요소로 하는 경우
     * public static <T extends Comparable<? super T>> void sort(@NotNull java.util.List<T> list)
       
@@ -546,13 +546,12 @@ mutableObjList.forEach(obj -> System.out.println(obj.x)); // 10 20 20 40 50
 
 ```
 
-### copy
-#### 얕은 복사(Shallow copy)
+## Example(copy) - 얕은 복사(Shallow copy)
 원본이 손상되는걸 막기 위해, 복사본을 이용하여 각종 연산을 수행하는 것이 안전하다. Collection은 복사를 위한
 여러가지 메서드를 지원한다. 하지만 Mutable 요소를 가지는 Collection에 대해서는 복사본 객체의 내용 변경에 따라
 원본 내용도 변경되어 버리며, 이것을 얕은 복사라고 한다.
 
-##### 참조
+### 참조
 얕은 복사의 대표적인 방법.  
 > List의 레퍼런스 변수(strList)는 인스턴스(실제 리스트)의 메모리 주소를 가지고 있을 뿐이고,
 `=`으로 새 레퍼런스 변수(newStrList)에 넘겨주는 값도 결국 기존 인스턴스의 메모리 주소이다.
@@ -574,7 +573,7 @@ strList.forEach(System.out::println); // Java Data
 newStrList.forEach(System.out::println); // Java Data
 
 ```
-##### 복사 생성자
+### 복사 생성자
 `ArrayList`의 생성 시 파라미터로 레퍼런스 변수를 전달하는 방법이다.  
 리스트의 요소가 Immutable일 시 깊은 복사처럼 사용할 수 있는 방법이다.
 Mutable 객체를 요소로 가지게 되면, 요소의 값 변화시 원본도 바뀌는 얕은 복사가 되므로
@@ -614,7 +613,7 @@ mutableObjectList.forEach(obj -> System.out.println(obj.x)); // 10 1 2 3 4 (원�
 newMutableObjectList.forEach(obj -> System.out.println(obj.x)); // 10 1 2 3 4
 ```
 
-##### Collections.copy
+### `Collections.copy`
 `Collections`에서 제공하는 복사 메서드이다. 단, 복사될 리스트의 용량(Size가 아닌 Capacity)이 확보되어 있어야 하기 때문에
 새로운 클론을 만드는 용도로는 사용하기 힘들다.  
 첫 번째 파라미터로 target list를, 두 번째 파라미터로 source list를 넘겨준다.  
@@ -642,7 +641,7 @@ strList.forEach(System.out::println); // Java Data Structure
 newStrList.forEach(System.out::println); // Java Data
 
 ```
-##### Collections.addAll
+### `Collections.addAll`
 파라미터로 전달받은 리스트의 모든 요소를 호출한 리스트의 뒤에 붙이는 개념이다.  
 빈 리스트로 호출하게 되면 결국 복사의 의미가 되므로 `Collections.copy()`와 결과가 비슷하지만
 공간을 미리 준비할 필요가 없다는 점에서 훨씬 편리하다.  
@@ -666,7 +665,7 @@ strList.forEach(System.out::println); // Java Data Structure
 newStrList.forEach(System.out::println); // Java Data
 
 ```
-##### Stream 이용 (java 8)
+### `Stream` 이용 (java 8)
 stream으로 사용하기로 한 List를 java 8의 `Collectors` class에 구현된 `toList()` 메서드를 이용하여
 다시 List로 반환하는 방법이다. 이 방법 역시 복사 생성자로 대체할 수 있다.
 ```$xslt
@@ -685,11 +684,11 @@ newStrList.forEach(System.out::println); // Java Data
 
 ```
 
-#### 깊은 복사(Deep copy)
+## Example(copy) - 깊은 복사(Deep copy)
 Collection을 완벽하게 복사하는 메서드는 구현되어있지 않으므로
 객체 참조의 참조까지 완전히 복사(깊은 복사)하려면 하나하나 똑같이 생성하여 추가할 수밖에 없다.
 
-##### 직접 복사
+### 직접 복사
 리스트를 순회하면서 똑같은 새로운 객체를 만들어 새 리스트에 추가하는 방식으로 사용한다.
 
 * case 1 - 불변 객체를 요소로 하는 경우
